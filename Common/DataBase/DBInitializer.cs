@@ -33,8 +33,7 @@ namespace ElectionApp.Common.DataBase
 
         private static void GetConnectionStringFromUser()
         {
-            string dataSource = "LAPTOP-183GKF7M\\SQLEXPRESS01"; // Default value
-            /*string dataSource = Microsoft.VisualBasic.Interaction.InputBox("Enter the Data Source:", "Enter Data Source", "");
+            string dataSource = Microsoft.VisualBasic.Interaction.InputBox("Enter the Data Source:", "Enter Data Source", "");
 
             // Replace double backslashes with single backslashes
             dataSource = dataSource.Replace(@"\\", @"\");
@@ -42,7 +41,7 @@ namespace ElectionApp.Common.DataBase
             if (string.IsNullOrEmpty(dataSource))
             {
                 dataSource = "LAPTOP-183GKF7M\\SQLEXPRESS01"; // Default value
-            }*/
+            }
 
             // Construct the connection string using the provided values
             connectionString = $"Data Source={dataSource}; Initial Catalog=ElectionDB; Integrated Security=true;";
