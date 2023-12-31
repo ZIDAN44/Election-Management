@@ -55,12 +55,12 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE VOTER (
                         NID INT IDENTITY(1,1) PRIMARY KEY,
-                        V_IDENTIFIER AS 'VT-' + RIGHT('000' + CAST(NID AS VARCHAR(10)), 3) PERSISTED,
+                        V_IDENTIFIER AS 'VT-' + RIGHT('000' + CAST(NID AS VARCHAR(10)), 3) PERSISTED NOT NULL,
                         V_NAME VARCHAR(100),
                         V_EMAIL VARCHAR(100),
                         PIC VARBINARY(MAX),
-                        HAS_VOTE BIT DEFAULT 0
-
+                        HAS_VOTE BIT DEFAULT 0,
+                        CONSTRAINT [UQ_PRODUCT_V_IDENTIFIER] UNIQUE ([V_IDENTIFIER])
                     );
                 END
 
@@ -69,13 +69,14 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE VOTER_TEMP (
                         TEMP_NID INT IDENTITY(1,1) PRIMARY KEY,
-                        V_IDENTIFIER AS 'TVT-' + RIGHT('000' + CAST(TEMP_NID AS VARCHAR(10)), 3) PERSISTED,
+                        V_IDENTIFIER AS 'TVT-' + RIGHT('00' + CAST(TEMP_NID AS VARCHAR(10)), 2) PERSISTED NOT NULL,
                         V_NAME VARCHAR(100),
                         V_EMAIL VARCHAR(100),
                         PIC VARBINARY(MAX),
                         HAS_VOTE BIT DEFAULT 0,
                         APRV BIT DEFAULT 0,
-                        APRV_NID VARCHAR(MAX)
+                        APRV_NID VARCHAR(MAX),
+                        CONSTRAINT [UQ_PRODUCT_VT_IDENTIFIER] UNIQUE ([V_IDENTIFIER])
                     );
                 END
 
@@ -84,12 +85,13 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE NOMINEE (
                         NOM_ID INT IDENTITY(1,1) PRIMARY KEY,
-                        N_IDENTIFIER AS 'NT-' + RIGHT('000' + CAST(NOM_ID AS VARCHAR(10)), 3) PERSISTED,
+                        N_IDENTIFIER AS 'NT-' + RIGHT('000' + CAST(NOM_ID AS VARCHAR(10)), 3) PERSISTED NOT NULL,
                         N_NAME VARCHAR(100),
                         P_NAME VARCHAR(100),
                         N_EMAIL VARCHAR(100),
                         LOGO VARBINARY(MAX),
-                        VCOUNT INT
+                        VCOUNT INT,
+                        CONSTRAINT [UQ_PRODUCT_N_IDENTIFIER] UNIQUE ([N_IDENTIFIER])
                     );
                 END
 
@@ -98,14 +100,15 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE NOMINEE_TEMP (
                         TEMP_NOM_ID INT IDENTITY(1,1) PRIMARY KEY,
-                        N_IDENTIFIER AS 'TNT-' + RIGHT('000' + CAST(TEMP_NOM_ID AS VARCHAR(10)), 3) PERSISTED,
+                        N_IDENTIFIER AS 'TNT-' + RIGHT('00' + CAST(TEMP_NOM_ID AS VARCHAR(10)), 2) PERSISTED NOT NULL,
                         N_NAME VARCHAR(100),
                         P_NAME VARCHAR(100),
                         N_EMAIL VARCHAR(100),
                         LOGO VARBINARY(MAX),
                         VCOUNT INT,
                         APRV BIT DEFAULT 0,
-                        APRV_NOM_ID VARCHAR(MAX)
+                        APRV_NOM_ID VARCHAR(MAX),
+                        CONSTRAINT [UQ_PRODUCT_NT_IDENTIFIER] UNIQUE ([N_IDENTIFIER])
                     );
                 END
 
@@ -114,9 +117,10 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE PARTY (
                         PA_ID INT IDENTITY(1,1) PRIMARY KEY,
-                        P_IDENTIFIER AS 'PT-' + RIGHT('000' + CAST(PA_ID AS VARCHAR(10)), 3) PERSISTED,
+                        P_IDENTIFIER AS 'PT-' + RIGHT('000' + CAST(PA_ID AS VARCHAR(10)), 3) PERSISTED NOT NULL,
                         P_NAME VARCHAR(100),
-                        LOGO VARBINARY(MAX)
+                        LOGO VARBINARY(MAX),
+                        CONSTRAINT [UQ_PRODUCT_P_IDENTIFIER] UNIQUE ([P_IDENTIFIER])
                     );
                 END
 
@@ -124,8 +128,10 @@ namespace ElectionApp.Common.DataBase
                 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'VOTES')
                 BEGIN
                     CREATE TABLE VOTES (
-                        VOTER_ID VARCHAR(MAX),
-                        NOMINEE_ID VARCHAR(MAX)
+                        VOTER_ID VARCHAR(6) NOT NULL,
+                        NOMINEE_ID VARCHAR(6) NOT NULL,
+                        CONSTRAINT FK_VOTER_NOMINEE FOREIGN KEY (VOTER_ID) REFERENCES VOTER (V_IDENTIFIER),
+                        CONSTRAINT FK_NOMINEE_VOTER FOREIGN KEY (NOMINEE_ID) REFERENCES NOMINEE (N_IDENTIFIER)
                     );
                 END
 
@@ -134,10 +140,11 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE ADMIN (
                         A_ID INT IDENTITY(1,1) PRIMARY KEY,
-                        A_IDENTIFIER AS 'AT-' + RIGHT('000' + CAST(A_ID AS VARCHAR(10)), 3) PERSISTED,
+                        A_IDENTIFIER AS 'AT-' + RIGHT('000' + CAST(A_ID AS VARCHAR(10)), 3) PERSISTED NOT NULL,
                         A_NAME VARCHAR(100),
                         EMAIL VARCHAR(100),
-                        PHONE VARCHAR(20)
+                        PHONE VARCHAR(20),
+                        CONSTRAINT [UQ_PRODUCT_A_IDENTIFIER] UNIQUE ([A_IDENTIFIER])
                     );
                 END
 
@@ -145,9 +152,10 @@ namespace ElectionApp.Common.DataBase
                 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REGISTRARS')
                 BEGIN
                     CREATE TABLE REGISTRARS (
-                        USER_ID VARCHAR(MAX),
-                        ADMIN_ID VARCHAR(MAX),
-                        ROLE VARCHAR(50)
+                        USER_ID VARCHAR(6) NOT NULL,
+                        ADMIN_ID VARCHAR(6) NOT NULL,
+                        ROLE VARCHAR(50),
+                        CONSTRAINT FK_ADMIN_REGISTRAR FOREIGN KEY (ADMIN_ID) REFERENCES ADMIN (A_IDENTIFIER)
                     );
                 END
 
@@ -156,12 +164,13 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE ELECTION (
                         E_ID INT IDENTITY(1,1) PRIMARY KEY,
-                        E_IDENTIFIER AS 'ET-' + RIGHT('000' + CAST(E_ID AS VARCHAR(10)), 3) PERSISTED,
+                        E_IDENTIFIER AS 'ET-' + RIGHT('000' + CAST(E_ID AS VARCHAR(10)), 3) PERSISTED NOT NULL,
                         E_NAME VARCHAR(100),
                         TYPE VARCHAR(100),
                         S_DATE DATE,
                         E_DATE DATE,
-                        R_DOC VARBINARY(MAX)
+                        R_DOC VARBINARY(MAX),
+                        CONSTRAINT [UQ_PRODUCT_E_IDENTIFIER] UNIQUE ([E_IDENTIFIER])
                     );
                 END
 
@@ -169,10 +178,12 @@ namespace ElectionApp.Common.DataBase
                 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PARTICIPATES')
                 BEGIN
                     CREATE TABLE PARTICIPATES (
-                        ELECTION_ID VARCHAR(MAX),
-                        NOMINEE_ID VARCHAR(MAX),
+                        ELECTION_ID VARCHAR(6) NOT NULL,
+                        NOMINEE_ID VARCHAR(6) NOT NULL,
                         APRV BIT DEFAULT 0,
-                        R_DOC VARBINARY(MAX)
+                        R_DOC VARBINARY(MAX),
+                        CONSTRAINT FK_PARTICIPATE_NOMINEE FOREIGN KEY (ELECTION_ID) REFERENCES ELECTION (E_IDENTIFIER),
+                        CONSTRAINT FK_NOMINEE_PARTICIPATE FOREIGN KEY (NOMINEE_ID) REFERENCES NOMINEE (N_IDENTIFIER)
                     );
                 END
 
@@ -180,8 +191,10 @@ namespace ElectionApp.Common.DataBase
                 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REGULATES')
                 BEGIN
                     CREATE TABLE REGULATES (
-                        ELECTION_ID VARCHAR(MAX),
-                        ADMIN_ID VARCHAR(MAX)
+                        ELECTION_ID VARCHAR(6) NOT NULL,
+                        ADMIN_ID VARCHAR(6) NOT NULL,
+                        CONSTRAINT FK_REGULATE_ADMIN FOREIGN KEY (ELECTION_ID) REFERENCES ELECTION (E_IDENTIFIER),
+                        CONSTRAINT FK_ADMIN_REGULATE FOREIGN KEY (ADMIN_ID) REFERENCES ADMIN (A_IDENTIFIER)
                     );
                 END
 
@@ -189,7 +202,7 @@ namespace ElectionApp.Common.DataBase
                 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'LOGIN')
                 BEGIN
                     CREATE TABLE LOGIN (
-                        UID VARCHAR(100) PRIMARY KEY,
+                        UID VARCHAR(6) NOT NULL,
                         PASSWORD VARCHAR(MAX),
                         ROLE VARCHAR(50)
                     );
@@ -199,7 +212,7 @@ namespace ElectionApp.Common.DataBase
                 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REJECTIONS')
                 BEGIN
                     CREATE TABLE REJECTIONS (
-                        UID VARCHAR(100),
+                        UID VARCHAR(6) NOT NULL,
                         REASONS VARCHAR(MAX)
                     );
                 END
