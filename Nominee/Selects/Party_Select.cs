@@ -80,6 +80,14 @@ namespace ElectionApp.Nominee
                                     updateNomineeCommand.Parameters.AddWithValue("@PartyName", partyItem.Message2.Replace("Name: ", ""));
                                     updateNomineeCommand.ExecuteNonQuery();
 
+                                    // Insert into JOINS table
+                                    string insertJoinsQuery = "INSERT INTO JOINS (PARTY_ID, NOMINEE_ID, JOIN_DATE) " +
+                                                              "VALUES (@PartyID, @NomineeID, GETDATE())";
+                                    SqlCommand insertJoinsCommand = new SqlCommand(insertJoinsQuery, updateConnection);
+                                    insertJoinsCommand.Parameters.AddWithValue("@PartyID", partyItem.Message1.Replace("ID: ", ""));
+                                    insertJoinsCommand.Parameters.AddWithValue("@NomineeID", GivenID);
+                                    insertJoinsCommand.ExecuteNonQuery();
+
                                     N_Dashboard dashboard = this.ParentForm as N_Dashboard;
                                     if (dashboard != null)
                                     {

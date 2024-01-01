@@ -124,6 +124,18 @@ namespace ElectionApp.Common.DataBase
                     );
                 END
 
+                -- Create JOINS table
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'JOINS')
+                BEGIN
+                    CREATE TABLE JOINS (
+                        PARTY_ID VARCHAR(6) NOT NULL,
+                        NOMINEE_ID VARCHAR(6) NOT NULL,
+                        JOIN_DATE DATE NOT NULL,
+                        CONSTRAINT FK_PARTY_NOMINEE FOREIGN KEY (PARTY_ID) REFERENCES PARTY (P_IDENTIFIER),
+                        CONSTRAINT FK_NOMINEE_PARTY FOREIGN KEY (NOMINEE_ID) REFERENCES NOMINEE (N_IDENTIFIER)
+                    );
+                END
+
                 -- Create VOTES table
                 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'VOTES')
                 BEGIN
