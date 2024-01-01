@@ -240,7 +240,7 @@ namespace ElectionApp.Admin.Election
                             string eIdentifier = selectedRow.Cells["E_IDENTIFIER"].Value.ToString();
 
                             // Insert data into REJECTIONS table
-                            Reject.InsertIntoRejections(eIdentifier, reason, ConnectionString);
+                            Reject.InsertIntoRejections(eIdentifier, reason, adminID, ConnectionString);
 
                             // Remove from ELECTION table
                             RemoveElection(eIdentifier);

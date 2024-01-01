@@ -288,10 +288,8 @@ namespace ElectionApp.Admin.Nominee
 
         private void RejectRegistration()
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            if (dataGridView1.SelectedRows.Count > 0)
             {
-                connection.Open();
-
                 int selectedRowIndex = dataGridView1.CurrentCell.RowIndex;
                 string nIdentifier = dataGridView1.Rows[selectedRowIndex].Cells["N_IDENTIFIER"].Value.ToString();
 
@@ -304,25 +302,23 @@ namespace ElectionApp.Admin.Nominee
                     return;
                 }
 
+                // Prompt user for rejection confirmation and reasons
                 var confirmResult = MessageBox.Show("Are you sure you want to reject this registration?", "Confirm Rejection", MessageBoxButtons.YesNo);
                 if (confirmResult == DialogResult.Yes)
                 {
                     try
                     {
-                        // Insert data into REJECTIONS table
-                        string insertRejectionsQuery = "INSERT INTO REJECTIONS (UID, REASONS) VALUES (@nIdentifier, @reason)";
-                        using (SqlCommand insertRejectionsCommand = new SqlCommand(insertRejectionsQuery, connection))
+                        string reason = Reject.PromptReason();
+
+                        if (!string.IsNullOrEmpty(reason))
                         {
-                            // Prompt user for rejection reason
-                            string reason = Reject.PromptReason();
+                            // Call Reject.InsertIntoRejections for REJECTIONS table insertion
+                            Reject.InsertIntoRejections(nIdentifier, reason, adminID, ConnectionString);
 
-                            if (!string.IsNullOrEmpty(reason))
+                            // Update NOMINEE_TEMP table
+                            using (SqlConnection connection = new SqlConnection(ConnectionString))
                             {
-                                insertRejectionsCommand.Parameters.AddWithValue("@nIdentifier", nIdentifier);
-                                insertRejectionsCommand.Parameters.AddWithValue("@reason", reason);
-                                insertRejectionsCommand.ExecuteNonQuery();
-
-                                // Update NOMINEE_TEMP's APRV with 0 to mark the registration as rejected
+                                connection.Open();
                                 string updateAPRVQuery = "UPDATE NOMINEE_TEMP SET APRV = NULL WHERE N_IDENTIFIER = @NIdentifier";
                                 using (SqlCommand updateAPRVCommand = new SqlCommand(updateAPRVQuery, connection))
                                 {
@@ -333,10 +329,10 @@ namespace ElectionApp.Admin.Nominee
                                     LoadNomineeTempData();
                                 }
                             }
-                            else
-                            {
-                                MessageBox.Show("Please provide a reason for rejection.");
-                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please provide a reason for rejection.");
                         }
                     }
                     catch (Exception ex)
@@ -344,6 +340,10 @@ namespace ElectionApp.Admin.Nominee
                         MessageBox.Show("Error: " + ex.Message);
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to reject.");
             }
         }
 

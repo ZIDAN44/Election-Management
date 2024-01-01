@@ -279,7 +279,7 @@ namespace ElectionApp.Admin.Nominee
                             string nIdentifier = selectedRow.Cells["N_IDENTIFIER"].Value.ToString();
 
                             // Insert data into REJECTIONS table
-                            Reject.InsertIntoRejections(nIdentifier, reason, ConnectionString);
+                            Reject.InsertIntoRejections(nIdentifier, reason, adminID, ConnectionString);
 
                             // Check if the user exists in NOMINEE_TEMP table
                             bool userExistsInNomineeTemp = CheckUserExistsInNomineeTemp(nIdentifier);

@@ -36,7 +36,7 @@ namespace ElectionApp.Common
             return reason;
         }
 
-        public static void InsertIntoRejections(string nIdentifier, string reason, string connectionString)
+        public static void InsertIntoRejections(string nIdentifier, string reason, string adminID, string connectionString)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -44,10 +44,11 @@ namespace ElectionApp.Common
                 {
                     connection.Open();
 
-                    string insertQuery = "INSERT INTO REJECTIONS (UID, REASONS) VALUES (@nIdentifier, @reason)";
+                    string insertQuery = "INSERT INTO REJECTIONS (UID, REASONS, ADMIN_ID) VALUES (@nIdentifier, @reason, @adminID)";
                     SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
                     insertCommand.Parameters.AddWithValue("@nIdentifier", nIdentifier);
                     insertCommand.Parameters.AddWithValue("@reason", reason);
+                    insertCommand.Parameters.AddWithValue("@adminID", adminID);
                     insertCommand.ExecuteNonQuery();
                 }
                 catch (Exception ex)

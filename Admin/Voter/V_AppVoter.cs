@@ -291,10 +291,8 @@ namespace ElectionApp.Admin.Voter
 
         private void RejectRegistration()
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            if (dataGridView1.SelectedRows.Count > 0)
             {
-                connection.Open();
-
                 int selectedRowIndex = dataGridView1.CurrentCell.RowIndex;
                 string vIdentifier = dataGridView1.Rows[selectedRowIndex].Cells["V_IDENTIFIER"].Value.ToString();
 
@@ -312,20 +310,16 @@ namespace ElectionApp.Admin.Voter
                 {
                     try
                     {
-                        // Insert data into REJECTIONS table
-                        string insertRejectionsQuery = "INSERT INTO REJECTIONS (UID, REASONS) VALUES (@vIdentifier, @reason)";
-                        using (SqlCommand insertRejectionsCommand = new SqlCommand(insertRejectionsQuery, connection))
+                        string reason = Reject.PromptReason();
+
+                        if (!string.IsNullOrEmpty(reason))
                         {
-                            // Prompt user for rejection reason
-                            string reason = Reject.PromptReason();
+                            // Call Reject.InsertIntoRejections for REJECTIONS table insertion
+                            Reject.InsertIntoRejections(vIdentifier, reason, adminID, ConnectionString);
 
-                            if (!string.IsNullOrEmpty(reason))
+                            using (SqlConnection connection = new SqlConnection(ConnectionString))
                             {
-                                insertRejectionsCommand.Parameters.AddWithValue("@vIdentifier", vIdentifier);
-                                insertRejectionsCommand.Parameters.AddWithValue("@reason", reason);
-                                insertRejectionsCommand.ExecuteNonQuery();
-
-                                // Update VOTER_TEMP's APRV with 0 to mark the registration as rejected
+                                connection.Open();
                                 string updateAPRVQuery = "UPDATE VOTER_TEMP SET APRV = NULL WHERE V_IDENTIFIER = @VIdentifier";
                                 using (SqlCommand updateAPRVCommand = new SqlCommand(updateAPRVQuery, connection))
                                 {
@@ -336,10 +330,10 @@ namespace ElectionApp.Admin.Voter
                                     LoadVoterTempData();
                                 }
                             }
-                            else
-                            {
-                                MessageBox.Show("Please provide a reason for rejection.");
-                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please provide a reason for rejection.");
                         }
                     }
                     catch (Exception ex)
@@ -347,6 +341,10 @@ namespace ElectionApp.Admin.Voter
                         MessageBox.Show("Error: " + ex.Message);
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to reject.");
             }
         }
 

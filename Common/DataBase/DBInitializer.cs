@@ -225,7 +225,9 @@ namespace ElectionApp.Common.DataBase
                 BEGIN
                     CREATE TABLE REJECTIONS (
                         UID VARCHAR(6) NOT NULL,
-                        REASONS VARCHAR(MAX)
+                        REASONS VARCHAR(MAX),
+                        ADMIN_ID VARCHAR(6) NOT NULL,
+                        CONSTRAINT FK_ADMIN_REJECTION FOREIGN KEY (ADMIN_ID) REFERENCES ADMIN (A_IDENTIFIER)
                     );
                 END
             ";

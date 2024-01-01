@@ -277,7 +277,7 @@ namespace ElectionApp.Admin.Voter
                             string vIdentifier = selectedRow.Cells["V_IDENTIFIER"].Value.ToString();
 
                             // Insert data into REJECTIONS table
-                            Reject.InsertIntoRejections(vIdentifier, reason, ConnectionString);
+                            Reject.InsertIntoRejections(vIdentifier, reason, adminID, ConnectionString);
 
                             // Check if the user exists in VOTER_TEMP table
                             bool userExistsInVoterTemp = CheckUserExistsInVoterTemp(vIdentifier);

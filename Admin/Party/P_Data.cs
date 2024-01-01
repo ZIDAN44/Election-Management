@@ -217,7 +217,7 @@ namespace ElectionApp.Admin.Party
                             string pIdentifier = selectedRow.Cells["P_IDENTIFIER"].Value.ToString();
 
                             // Insert data into REJECTIONS table
-                            Reject.InsertIntoRejections(pIdentifier, reason, ConnectionString);
+                            Reject.InsertIntoRejections(pIdentifier, reason, adminID, ConnectionString);
 
                             // Remove party from PARTY table
                             RemoveParty(pIdentifier);
