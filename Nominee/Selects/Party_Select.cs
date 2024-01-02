@@ -5,8 +5,6 @@ namespace ElectionApp.Nominee
 {
     public partial class Party_Select : UserControl
     {
-        private string givenID;
-        private string connectionString;
         private List<Party_List> originalPartyItems;
 
         public Party_Select(string givenID, string connectionString)
@@ -17,17 +15,9 @@ namespace ElectionApp.Nominee
             LoadAvailablePartys();
         }
 
-        private string GivenID
-        {
-            get { return givenID; }
-            set { givenID = value; }
-        }
+        private string GivenID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadAvailablePartys()
         {

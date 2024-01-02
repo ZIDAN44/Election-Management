@@ -14,7 +14,6 @@ namespace ElectionApp.Nominee
         private string _message1;
         private string _message2;
         private Image _icon1;
-        private Button _button1;
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -44,11 +43,7 @@ namespace ElectionApp.Nominee
 
 
         [Category("Custom Props")]
-        public Button Button1
-        {
-            get { return _button1; }
-            set { _button1 = value; }
-        }
+        public Button Button1 { get; set; }
 
         [Category("Custom Props")]
         public event EventHandler JoinButtonClicked;

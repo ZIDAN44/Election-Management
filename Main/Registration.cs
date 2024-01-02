@@ -5,7 +5,6 @@ namespace ElectionApp.Main
 {
     public partial class Registration : Form
     {
-        private string connectionString;
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
@@ -19,11 +18,7 @@ namespace ElectionApp.Main
             textBox1.Select();
         }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void PerformVoterRegistration()
         {
@@ -305,7 +300,7 @@ namespace ElectionApp.Main
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            MainPage mainPage = new MainPage(connectionString);
+            MainPage mainPage = new MainPage(ConnectionString);
             mainPage.Show();
             Hide();
         }

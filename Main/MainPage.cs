@@ -7,7 +7,6 @@ namespace ElectionApp.Main
 {
     public partial class MainPage : Form
     {
-        private string connectionString;
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
@@ -20,17 +19,13 @@ namespace ElectionApp.Main
             textUserName.Select();
         }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private bool ValidateLogin(string givenID, string password, out string role)
         {
             role = string.Empty;
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 string query = "SELECT COUNT(*) FROM LOGIN WHERE UID = @ID AND PASSWORD = @Password";
                 string roleQuery = "SELECT ROLE FROM LOGIN WHERE UID = @ID";
@@ -102,27 +97,27 @@ namespace ElectionApp.Main
                 switch (lowerCaseRole)
                 {
                     case "admin":
-                        A_Dashboard adminDashboard = new A_Dashboard(givenID, connectionString);
+                        A_Dashboard adminDashboard = new A_Dashboard(givenID, ConnectionString);
                         adminDashboard.Show();
                         Hide();
                         break;
                     case "voter":
-                        V_Dashboard voterDashboard = new V_Dashboard(givenID, connectionString);
+                        V_Dashboard voterDashboard = new V_Dashboard(givenID, ConnectionString);
                         voterDashboard.Show();
                         Hide();
                         break;
                     case "voter_temp":
-                        VT_Dashboard voterTempDashboard = new VT_Dashboard(givenID, connectionString);
+                        VT_Dashboard voterTempDashboard = new VT_Dashboard(givenID, ConnectionString);
                         voterTempDashboard.Show();
                         Hide();
                         break;
                     case "nominee":
-                        N_Dashboard nomineeDashboard = new N_Dashboard(givenID, connectionString);
+                        N_Dashboard nomineeDashboard = new N_Dashboard(givenID, ConnectionString);
                         nomineeDashboard.Show();
                         Hide();
                         break;
                     case "nominee_temp":
-                        NT_Dashboard nomineeTempDashboard = new NT_Dashboard(givenID, connectionString);
+                        NT_Dashboard nomineeTempDashboard = new NT_Dashboard(givenID, ConnectionString);
                         nomineeTempDashboard.Show();
                         Hide();
                         break;
@@ -167,7 +162,7 @@ namespace ElectionApp.Main
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Registration registration = new Registration(connectionString);
+            Registration registration = new Registration(ConnectionString);
             registration.Show();
             Hide();
         }

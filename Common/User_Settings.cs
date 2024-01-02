@@ -5,9 +5,6 @@ namespace ElectionApp.Common
 {
     public partial class User_Settings : UserControl
     {
-        private string givenID;
-        private string connectionString;
-
         public User_Settings(string givenID, string connectionString)
         {
             GivenID = givenID;
@@ -15,17 +12,9 @@ namespace ElectionApp.Common
             InitializeComponent();
         }
 
-        private string GivenID
-        {
-            get { return givenID; }
-            set { givenID = value; }
-        }
+        private string GivenID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         // Fetch the current password associated with givenID from the LOGIN table
         private string GetCurrentPassword(string userID)

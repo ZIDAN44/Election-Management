@@ -5,9 +5,6 @@ namespace ElectionApp.Admin
 {
     public partial class A_Profile : UserControl
     {
-        private string adminID;
-        private string connectionString;
-
         private UserControl currentAdminControl;
         private User_Settings n_SettingsControl;
 
@@ -19,17 +16,9 @@ namespace ElectionApp.Admin
             FetchAdminDetails();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void adduserControl(UserControl userControl)
         {
@@ -71,7 +60,7 @@ namespace ElectionApp.Admin
                                    "FROM ADMIN WHERE A_IDENTIFIER = @givenID";
 
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@givenID", adminID);
+                    command.Parameters.AddWithValue("@givenID", AdminID);
 
                     SqlDataReader reader = command.ExecuteReader();
                     if (reader.Read())
@@ -111,7 +100,7 @@ namespace ElectionApp.Admin
         {
             if (n_SettingsControl == null || n_SettingsControl.IsDisposed)
             {
-                n_SettingsControl = new User_Settings(adminID, connectionString);
+                n_SettingsControl = new User_Settings(AdminID, ConnectionString);
                 adduserControl(n_SettingsControl);
             }
             else

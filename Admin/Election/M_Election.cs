@@ -2,9 +2,6 @@
 {
     public partial class M_Election : UserControl
     {
-        private string adminID;
-        private string connectionString;
-
         public M_Election(string adminID, string connectionString)
         {
             AdminID = adminID;
@@ -15,17 +12,9 @@
             adduserControl(e_Data);
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void adduserControl(UserControl userControl)
         {
@@ -37,7 +26,7 @@
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
-            E_Data e_Data = new E_Data(adminID, connectionString);
+            E_Data e_Data = new E_Data(AdminID, ConnectionString);
             adduserControl(e_Data);
         }
 
@@ -50,7 +39,7 @@
             {
                 DataGridViewRow selectedRow = e_Data.dataGridView1.SelectedRows[0];
 
-                E_Modify e_Modify = new E_Modify(adminID, connectionString);
+                E_Modify e_Modify = new E_Modify(AdminID, ConnectionString);
                 e_Modify.ReceiveSelectedRowData(selectedRow);
                 adduserControl(e_Modify);
             }
@@ -62,19 +51,19 @@
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
-            E_Add e_Add = new E_Add(adminID, connectionString);
+            E_Add e_Add = new E_Add(AdminID, ConnectionString);
             adduserControl(e_Add);
         }
 
         private void guna2Button4_Click(object sender, EventArgs e)
         {
-            E_AppCan e_AppCan = new E_AppCan(adminID, connectionString);
+            E_AppCan e_AppCan = new E_AppCan(AdminID, ConnectionString);
             adduserControl(e_AppCan);
         }
 
         private void guna2Button5_Click(object sender, EventArgs e)
         {
-            E_CanData e_CanData = new E_CanData(adminID, connectionString);
+            E_CanData e_CanData = new E_CanData(AdminID, ConnectionString);
             adduserControl(e_CanData);
         }
     }

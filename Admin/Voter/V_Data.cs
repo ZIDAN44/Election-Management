@@ -7,8 +7,6 @@ namespace ElectionApp.Admin.Voter
 {
     public partial class V_Data : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private SqlDataAdapter dataAdapter;
         private DataSet dataSet;
 
@@ -20,17 +18,9 @@ namespace ElectionApp.Admin.Voter
             LoadVoterData();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadVoterData()
         {
@@ -235,7 +225,7 @@ namespace ElectionApp.Admin.Voter
                             string vIdentifier = selectedRow.Cells["V_IDENTIFIER"].Value.ToString();
 
                             // Insert data into REJECTIONS table
-                            Reject.InsertIntoRejections(vIdentifier, reason, adminID, ConnectionString);
+                            Reject.InsertIntoRejections(vIdentifier, reason, AdminID, ConnectionString);
 
                             // Update VOTER table
                             UpdateVoter_APROV(vIdentifier);

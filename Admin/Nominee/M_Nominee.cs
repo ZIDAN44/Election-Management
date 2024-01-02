@@ -2,8 +2,6 @@
 {
     public partial class M_Nominee : UserControl
     {
-        private string adminID;
-        private string connectionString;
         public M_Nominee(string adminID, string connectionString)
         {
             AdminID = adminID;
@@ -14,17 +12,9 @@
             adduserControl(n_Data);
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void adduserControl(UserControl userControl)
         {
@@ -36,13 +26,13 @@
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
-            N_AppNom approveRes = new N_AppNom(adminID, connectionString);
+            N_AppNom approveRes = new N_AppNom(AdminID, ConnectionString);
             adduserControl(approveRes);
         }
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
-            N_Data n_Data = new N_Data(adminID, connectionString);
+            N_Data n_Data = new N_Data(AdminID, ConnectionString);
             adduserControl(n_Data);
         }
 
@@ -55,7 +45,7 @@
             {
                 DataGridViewRow selectedRow = n_Data.dataGridView1.SelectedRows[0];
 
-                N_Modify n_Modify = new N_Modify(adminID, connectionString);
+                N_Modify n_Modify = new N_Modify(AdminID, ConnectionString);
                 n_Modify.ReceiveSelectedRowData(selectedRow);
                 adduserControl(n_Modify);
             }
@@ -67,7 +57,7 @@
 
         private void guna2Button4_Click(object sender, EventArgs e)
         {
-            N_Add n_Add = new N_Add(adminID, connectionString);
+            N_Add n_Add = new N_Add(AdminID, ConnectionString);
             adduserControl(n_Add);
         }
     }

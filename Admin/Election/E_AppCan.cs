@@ -6,8 +6,6 @@ namespace ElectionApp.Admin.Election
 {
     public partial class E_AppCan : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private SqlDataAdapter dataAdapter;
         private DataSet dataSet;
 
@@ -19,17 +17,9 @@ namespace ElectionApp.Admin.Election
             LoadNomineeData();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadNomineeData()
         {

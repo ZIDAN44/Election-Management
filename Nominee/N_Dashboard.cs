@@ -7,8 +7,6 @@ namespace ElectionApp.Nominee
 {
     public partial class N_Dashboard : Form
     {
-        private string givenID;
-        private string connectionString;
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
@@ -29,17 +27,9 @@ namespace ElectionApp.Nominee
             FetchNomineeDetails();
         }
 
-        private string GivenID
-        {
-            get { return givenID; }
-            set { givenID = value; }
-        }
+        private string GivenID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void adduserControl1(UserControl userControl)
         {
@@ -143,7 +133,7 @@ namespace ElectionApp.Nominee
                                                     "WHERE p.NOMINEE_ID = @givenID";
 
                         SqlCommand participationCommand = new SqlCommand(participationQuery, connection);
-                        participationCommand.Parameters.AddWithValue("@givenID", givenID);
+                        participationCommand.Parameters.AddWithValue("@givenID", GivenID);
 
                         SqlDataReader participationReader = participationCommand.ExecuteReader();
                         if (participationReader.Read())
@@ -201,7 +191,7 @@ namespace ElectionApp.Nominee
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            MainPage mainPage = new MainPage(connectionString);
+            MainPage mainPage = new MainPage(ConnectionString);
             mainPage.Show();
             Hide();
         }
@@ -241,7 +231,7 @@ namespace ElectionApp.Nominee
             // Proceed with showing/hiding Party_Select control
             if (partySelect == null || partySelect.IsDisposed)
             {
-                partySelect = new Party_Select(givenID, connectionString);
+                partySelect = new Party_Select(GivenID, ConnectionString);
                 partySelect.VisibleChanged += (s, args) =>
                 {
                     if (!partySelect.Visible)
@@ -283,7 +273,7 @@ namespace ElectionApp.Nominee
             // Proceed with showing/hiding Election_Select control
             if (electionSelect == null || electionSelect.IsDisposed)
             {
-                electionSelect = new Election_Select(givenID, connectionString);
+                electionSelect = new Election_Select(GivenID, ConnectionString);
                 electionSelect.VisibleChanged += (s, args) =>
                 {
                     if (!electionSelect.Visible)
@@ -312,7 +302,7 @@ namespace ElectionApp.Nominee
         {
             if (n_SettingsControl == null || n_SettingsControl.IsDisposed)
             {
-                n_SettingsControl = new User_Settings(givenID, connectionString);
+                n_SettingsControl = new User_Settings(GivenID, ConnectionString);
                 adduserControl2(n_SettingsControl);
             }
             else
@@ -333,7 +323,7 @@ namespace ElectionApp.Nominee
         {
             if (n_Notification == null || n_Notification.IsDisposed)
             {
-                n_Notification = new Notification_Panel(givenID, connectionString, "nominee");
+                n_Notification = new Notification_Panel(GivenID, ConnectionString, "nominee");
                 adduserControl2(n_Notification);
             }
             else

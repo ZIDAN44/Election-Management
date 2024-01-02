@@ -7,8 +7,6 @@ namespace ElectionApp.Admin.Voter
 {
     public partial class V_AppVoter : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private SqlDataAdapter dataAdapter;
         private DataSet dataSet;
 
@@ -20,17 +18,9 @@ namespace ElectionApp.Admin.Voter
             LoadVoterTempData();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadVoterTempData()
         {
@@ -140,7 +130,7 @@ namespace ElectionApp.Admin.Voter
                 // Get the V_IDENTIFIER from the selected row in dataGridView1
                 string vIdentifier = dataGridView1.SelectedRows[0].Cells["V_IDENTIFIER"].Value.ToString();
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     try
                     {
@@ -244,7 +234,7 @@ namespace ElectionApp.Admin.Voter
                         if (!string.IsNullOrEmpty(reason))
                         {
                             // Call Reject.InsertIntoRejections for REJECTIONS table insertion
-                            Reject.InsertIntoRejections(vIdentifier, reason, adminID, ConnectionString);
+                            Reject.InsertIntoRejections(vIdentifier, reason, AdminID, ConnectionString);
 
                             using (SqlConnection connection = new SqlConnection(ConnectionString))
                             {

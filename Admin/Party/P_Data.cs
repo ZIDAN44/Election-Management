@@ -7,8 +7,6 @@ namespace ElectionApp.Admin.Party
 {
     public partial class P_Data : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private SqlDataAdapter dataAdapter;
         private DataSet dataSet;
 
@@ -20,17 +18,9 @@ namespace ElectionApp.Admin.Party
             LoadPartyData();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadPartyData()
         {
@@ -217,7 +207,7 @@ namespace ElectionApp.Admin.Party
                             string pIdentifier = selectedRow.Cells["P_IDENTIFIER"].Value.ToString();
 
                             // Insert data into REJECTIONS table
-                            Reject.InsertIntoRejections(pIdentifier, reason, adminID, ConnectionString);
+                            Reject.InsertIntoRejections(pIdentifier, reason, AdminID, ConnectionString);
 
                             // Remove party from PARTY table
                             RemoveParty(pIdentifier);

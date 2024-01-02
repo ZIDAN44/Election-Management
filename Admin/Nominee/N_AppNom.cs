@@ -7,8 +7,6 @@ namespace ElectionApp.Admin.Nominee
 {
     public partial class N_AppNom : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private SqlDataAdapter dataAdapter;
         private DataSet dataSet;
 
@@ -20,17 +18,9 @@ namespace ElectionApp.Admin.Nominee
             LoadNomineeTempData();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadNomineeTempData()
         {
@@ -138,7 +128,7 @@ namespace ElectionApp.Admin.Nominee
                 // Get the N_IDENTIFIER from the selected row in dataGridView1
                 string nIdentifier = dataGridView1.SelectedRows[0].Cells["N_IDENTIFIER"].Value.ToString();
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     try
                     {
@@ -242,7 +232,7 @@ namespace ElectionApp.Admin.Nominee
                         if (!string.IsNullOrEmpty(reason))
                         {
                             // Call Reject.InsertIntoRejections for REJECTIONS table insertion
-                            Reject.InsertIntoRejections(nIdentifier, reason, adminID, ConnectionString);
+                            Reject.InsertIntoRejections(nIdentifier, reason, AdminID, ConnectionString);
 
                             using (SqlConnection connection = new SqlConnection(ConnectionString))
                             {

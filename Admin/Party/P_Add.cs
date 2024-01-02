@@ -4,8 +4,6 @@ namespace ElectionApp.Admin.Party
 {
     public partial class P_Add : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private byte[] Logo;
         public P_Add(string adminID, string connectionString)
         {
@@ -14,17 +12,9 @@ namespace ElectionApp.Admin.Party
             InitializeComponent();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void button2_Click(object sender, EventArgs e)
         {

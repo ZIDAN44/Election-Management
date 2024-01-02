@@ -10,8 +10,6 @@ namespace ElectionApp
 {
     public partial class A_Dashboard : Form
     {
-        private string adminID;
-        private string connectionString;
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
@@ -27,17 +25,9 @@ namespace ElectionApp
             adduserControl(aHome);
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void adduserControl(UserControl userControl)
         {
@@ -49,14 +39,14 @@ namespace ElectionApp
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            MainPage mainPage = new MainPage(connectionString);
+            MainPage mainPage = new MainPage(ConnectionString);
             mainPage.Show();
             Hide();
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            A_Profile a_Profile = new A_Profile(adminID, connectionString);
+            A_Profile a_Profile = new A_Profile(AdminID, ConnectionString);
             adduserControl(a_Profile);
         }
 
@@ -68,25 +58,25 @@ namespace ElectionApp
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
-            M_Voter manageVoter = new M_Voter(adminID, ConnectionString);
+            M_Voter manageVoter = new M_Voter(AdminID, ConnectionString);
             adduserControl(manageVoter);
         }
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
-            M_Party m_Party = new M_Party(adminID, ConnectionString);
+            M_Party m_Party = new M_Party(AdminID, ConnectionString);
             adduserControl(m_Party);
         }
 
         private void guna2Button4_Click(object sender, EventArgs e)
         {
-            M_Nominee manageNominee = new M_Nominee(adminID, connectionString);
+            M_Nominee manageNominee = new M_Nominee(AdminID, ConnectionString);
             adduserControl(manageNominee);
         }
 
         private void guna2Button5_Click(object sender, EventArgs e)
         {
-            M_Election manageElection = new M_Election(adminID, connectionString);
+            M_Election manageElection = new M_Election(AdminID, ConnectionString);
             adduserControl(manageElection);
         }
 

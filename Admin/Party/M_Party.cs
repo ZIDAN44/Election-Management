@@ -2,9 +2,6 @@
 {
     public partial class M_Party : UserControl
     {
-        private string adminID;
-        private string connectionString;
-
         public M_Party(string adminID, string connectionString)
         {
             AdminID = adminID;
@@ -15,17 +12,9 @@
             adduserControl(p_Data);
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void adduserControl(UserControl userControl)
         {
@@ -37,7 +26,7 @@
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
-            P_Data p_Data = new P_Data(adminID, connectionString);
+            P_Data p_Data = new P_Data(AdminID, ConnectionString);
             adduserControl(p_Data);
         }
 
@@ -50,7 +39,7 @@
             {
                 DataGridViewRow selectedRow = p_Data.dataGridView1.SelectedRows[0];
 
-                P_Modify p_Modify = new P_Modify(adminID, connectionString);
+                P_Modify p_Modify = new P_Modify(AdminID, ConnectionString);
                 p_Modify.ReceiveSelectedRowData(selectedRow);
                 adduserControl(p_Modify);
             }
@@ -62,7 +51,7 @@
 
         private void guna2Button4_Click(object sender, EventArgs e)
         {
-            P_Add p_Add = new P_Add(adminID, connectionString);
+            P_Add p_Add = new P_Add(AdminID, ConnectionString);
             adduserControl(p_Add);
         }
     }

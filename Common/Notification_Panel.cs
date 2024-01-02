@@ -4,9 +4,6 @@ namespace ElectionApp.Common
 {
     public partial class Notification_Panel : UserControl
     {
-        private string givenID;
-        private string role;
-        private string connectionString;
         private bool IS_APROV = false;
 
         public Notification_Panel(string givenID, string connectionString, string role)
@@ -27,23 +24,11 @@ namespace ElectionApp.Common
             }
         }
 
-        private string GivenID
-        {
-            get { return givenID; }
-            set { givenID = value; }
-        }
+        private string GivenID { get; set; }
 
-        private string Role
-        {
-            get { return role; }
-            set { role = value; }
-        }
+        private string Role { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         #region VotersNotification
         private void ShowVoterNotifications()
@@ -69,7 +54,7 @@ namespace ElectionApp.Common
 
         private string GetVoterApprovalStatusMessage()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 try
                 {
@@ -77,7 +62,7 @@ namespace ElectionApp.Common
 
                     string query = "SELECT IS_APROV FROM VOTER WHERE V_IDENTIFIER = @GivenID";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    command.Parameters.AddWithValue("@GivenID", GivenID);
                     object isApproved = command.ExecuteScalar();
 
                     if (isApproved != null && isApproved != DBNull.Value)
@@ -114,7 +99,7 @@ namespace ElectionApp.Common
 
         private string GetVotingStatusMessage()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 try
                 {
@@ -122,7 +107,7 @@ namespace ElectionApp.Common
 
                     string query = "SELECT HAS_VOTE FROM VOTER WHERE V_IDENTIFIER = @GivenID";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    command.Parameters.AddWithValue("@GivenID", GivenID);
 
                     object hasVoted = command.ExecuteScalar();
 
@@ -184,7 +169,7 @@ namespace ElectionApp.Common
 
         private string GetNomineeApprovalStatusMessage()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 try
                 {
@@ -192,7 +177,7 @@ namespace ElectionApp.Common
 
                     string query = "SELECT IS_APROV FROM NOMINEE WHERE N_IDENTIFIER = @GivenID";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    command.Parameters.AddWithValue("@GivenID", GivenID);
                     object isApproved = command.ExecuteScalar();
 
                     if (isApproved != null && isApproved != DBNull.Value)
@@ -229,7 +214,7 @@ namespace ElectionApp.Common
 
         private string GetPartyStatusMessage()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 try
                 {
@@ -237,7 +222,7 @@ namespace ElectionApp.Common
 
                     string query = "SELECT P_NAME FROM NOMINEE WHERE N_IDENTIFIER = @GivenID";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    command.Parameters.AddWithValue("@GivenID", GivenID);
                     object partyName = command.ExecuteScalar();
 
                     if (partyName != null && partyName != DBNull.Value)
@@ -267,7 +252,7 @@ namespace ElectionApp.Common
 
         private string GetElectionStatusMessage()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 try
                 {
@@ -275,7 +260,7 @@ namespace ElectionApp.Common
 
                     string query = "SELECT APRV FROM PARTICIPATES WHERE NOMINEE_ID = @GivenID";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    command.Parameters.AddWithValue("@GivenID", GivenID);
                     object isApproved = command.ExecuteScalar();
 
                     if (isApproved != null && isApproved != DBNull.Value)

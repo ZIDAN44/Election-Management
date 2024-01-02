@@ -5,8 +5,6 @@ namespace ElectionApp.Voter.Selects
 {
     public partial class Vote_Select : UserControl
     {
-        private string givenID;
-        private string connectionString;
         private List<Nom_list> originalNomItems;
 
         public Vote_Select(string givenID, string connectionString)
@@ -17,17 +15,9 @@ namespace ElectionApp.Voter.Selects
             LoadAvailableNominees();
         }
 
-        private string GivenID
-        {
-            get { return givenID; }
-            set { givenID = value; }
-        }
+        private string GivenID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadAvailableNominees()
         {

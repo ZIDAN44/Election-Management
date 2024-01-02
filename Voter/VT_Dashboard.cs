@@ -7,8 +7,6 @@ namespace ElectionApp.Voter
 {
     public partial class VT_Dashboard : Form
     {
-        private string givenID;
-        private string connectionString;
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
@@ -26,17 +24,9 @@ namespace ElectionApp.Voter
             FetchVoterTDetails();
         }
 
-        private string GivenID
-        {
-            get { return givenID; }
-            set { givenID = value; }
-        }
+        private string GivenID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void adduserControl(UserControl userControl)
         {
@@ -148,7 +138,7 @@ namespace ElectionApp.Voter
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            MainPage mainPage = new MainPage(connectionString);
+            MainPage mainPage = new MainPage(ConnectionString);
             mainPage.Show();
             Hide();
         }
@@ -157,7 +147,7 @@ namespace ElectionApp.Voter
         {
             if (n_SettingsControl == null || n_SettingsControl.IsDisposed)
             {
-                n_SettingsControl = new User_Settings(givenID, connectionString);
+                n_SettingsControl = new User_Settings(GivenID, ConnectionString);
                 adduserControl(n_SettingsControl);
             }
             else
@@ -178,7 +168,7 @@ namespace ElectionApp.Voter
         {
             if (n_Notification == null || n_Notification.IsDisposed)
             {
-                n_Notification = new Notification_Panel(givenID, connectionString, "voter");
+                n_Notification = new Notification_Panel(GivenID, ConnectionString, "voter");
                 adduserControl(n_Notification);
             }
             else

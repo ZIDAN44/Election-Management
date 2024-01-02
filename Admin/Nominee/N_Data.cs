@@ -7,8 +7,6 @@ namespace ElectionApp.Admin.Nominee
 {
     public partial class N_Data : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private SqlDataAdapter dataAdapter;
         private DataSet dataSet;
 
@@ -20,17 +18,9 @@ namespace ElectionApp.Admin.Nominee
             LoadNomineeData();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         private void LoadNomineeData()
         {
@@ -237,7 +227,7 @@ namespace ElectionApp.Admin.Nominee
                             string nIdentifier = selectedRow.Cells["N_IDENTIFIER"].Value.ToString();
 
                             // Insert data into REJECTIONS table
-                            Reject.InsertIntoRejections(nIdentifier, reason, adminID, ConnectionString);
+                            Reject.InsertIntoRejections(nIdentifier, reason, AdminID, ConnectionString);
 
                             // Update NOMINEE table
                             UpdateNominee_APROV(nIdentifier);

@@ -4,8 +4,6 @@ namespace ElectionApp.Admin.Election
 {
     public partial class E_Modify : UserControl
     {
-        private string adminID;
-        private string connectionString;
         private string eIdentifier;
         private byte[] Doc;
 
@@ -16,17 +14,9 @@ namespace ElectionApp.Admin.Election
             InitializeComponent();
         }
 
-        private string AdminID
-        {
-            get { return adminID; }
-            set { adminID = value; }
-        }
+        private string AdminID { get; set; }
 
-        private string ConnectionString
-        {
-            get { return connectionString; }
-            set { connectionString = value; }
-        }
+        private string ConnectionString { get; set; }
 
         public void ReceiveSelectedRowData(DataGridViewRow selectedRow)
         {
