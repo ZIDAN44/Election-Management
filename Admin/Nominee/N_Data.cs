@@ -40,7 +40,7 @@ namespace ElectionApp.Admin.Nominee
                 {
                     connection.Open();
 
-                    string query = "SELECT N_IDENTIFIER, 'Click to Show' AS LogoLink, LOGO, N_NAME, P_NAME, N_EMAIL, VCOUNT FROM NOMINEE";
+                    string query = "SELECT N_IDENTIFIER, 'Click to Show' AS LogoLink, LOGO, N_NAME, P_NAME, N_EMAIL, VCOUNT FROM NOMINEE WHERE IS_APROV = 1";
                     using (SqlDataAdapter adapter = new SqlDataAdapter(query, connection))
                     {
                         DataTable dataTable = new DataTable();
@@ -163,7 +163,7 @@ namespace ElectionApp.Admin.Nominee
             }
         }
 
-        private void UpdateNomineeTemp(string nIdentifier)
+        private void UpdateNominee_APROV(string nIdentifier)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -171,79 +171,20 @@ namespace ElectionApp.Admin.Nominee
                 {
                     connection.Open();
 
-                    string updateQuery = "UPDATE NOMINEE_TEMP SET APRV = NULL WHERE APRV_NOM_ID = @nIdentifier";
+                    string updateQuery = "UPDATE NOMINEE SET IS_APROV = NULL WHERE N_IDENTIFIER = @nIdentifier";
                     SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
                     updateCommand.Parameters.AddWithValue("@nIdentifier", nIdentifier);
                     updateCommand.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error updating NOMINEE_TEMP: " + ex.Message);
+                    MessageBox.Show("Error updating NOMINEE: " + ex.Message);
                 }
                 finally
                 {
                     connection.Close();
                 }
             }
-        }
-
-        private void RemoveNominee(string nID)
-        {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                try
-                {
-                    connection.Open();
-
-                    string removeRegulatesQuery = "DELETE FROM NOMINEE WHERE N_IDENTIFIER = @nID";
-                    SqlCommand removeRegulatesCommand = new SqlCommand(removeRegulatesQuery, connection);
-                    removeRegulatesCommand.Parameters.AddWithValue("@nID", nID);
-                    removeRegulatesCommand.ExecuteNonQuery();
-
-                    LoadNomineeData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-        }
-
-        private bool CheckUserExistsInNomineeTemp(string nIdentifier)
-        {
-            bool userExists = false;
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                try
-                {
-                    connection.Open();
-
-                    string query = "SELECT TOP 1 1 FROM NOMINEE_TEMP WHERE APRV_NOM_ID = @nIdentifier";
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@nIdentifier", nIdentifier);
-
-                        object result = command.ExecuteScalar();
-                        if (result != null && result != DBNull.Value)
-                        {
-                            userExists = true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error checking NOMINEE_TEMP: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return userExists;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -281,17 +222,11 @@ namespace ElectionApp.Admin.Nominee
                             // Insert data into REJECTIONS table
                             Reject.InsertIntoRejections(nIdentifier, reason, adminID, ConnectionString);
 
-                            // Check if the user exists in NOMINEE_TEMP table
-                            bool userExistsInNomineeTemp = CheckUserExistsInNomineeTemp(nIdentifier);
+                            // Update NOMINEE table
+                            UpdateNominee_APROV(nIdentifier);
 
-                            if (userExistsInNomineeTemp)
-                            {
-                                // Update NOMINEE_TEMP table
-                                UpdateNomineeTemp(nIdentifier);
-                            }
-
-                            // Remove user from NOMINEE table
-                            RemoveNominee(nIdentifier);
+                            // Re-load the Nominee Data
+                            LoadNomineeData();
                         }
                         catch (Exception ex)
                         {

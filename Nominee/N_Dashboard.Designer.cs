@@ -53,6 +53,7 @@
             label1 = new Label();
             label7 = new Label();
             label2 = new Label();
+            pictureBox4 = new PictureBox();
             guna2GradientPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             panel1.SuspendLayout();
@@ -61,6 +62,7 @@
             guna2ShadowPanel1.SuspendLayout();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             SuspendLayout();
             // 
             // guna2CircleButton2
@@ -166,6 +168,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(pictureBox4);
             panel1.Controls.Add(pictureBox3);
             panel1.Controls.Add(label4);
             panel1.Controls.Add(pictureBox2);
@@ -178,7 +181,7 @@
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.profile_settings;
-            pictureBox3.Location = new Point(987, 10);
+            pictureBox3.Location = new Point(937, 10);
             pictureBox3.Margin = new Padding(0);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(35, 35);
@@ -191,7 +194,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Times New Roman", 16.2F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.Location = new Point(719, 12);
+            label4.Location = new Point(644, 12);
             label4.Name = "label4";
             label4.Size = new Size(224, 33);
             label4.TabIndex = 19;
@@ -332,6 +335,18 @@
             label2.TabIndex = 28;
             label2.Text = "Name: ";
             // 
+            // pictureBox4
+            // 
+            pictureBox4.Image = Properties.Resources.notification;
+            pictureBox4.Location = new Point(990, 10);
+            pictureBox4.Margin = new Padding(0);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(35, 35);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 29;
+            pictureBox4.TabStop = false;
+            pictureBox4.Click += pictureBox4_Click;
+            // 
             // N_Dashboard
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -354,6 +369,7 @@
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ResumeLayout(false);
         }
 
@@ -379,5 +395,6 @@
         private Label label1;
         private Label label7;
         private Label label2;
+        private PictureBox pictureBox4;
     }
 }

@@ -51,36 +51,6 @@ namespace ElectionApp.Main
                         if (count > 0)
                         {
                             role = roleCommand.ExecuteScalar()?.ToString();
-
-                            if (role.ToLower() == "nominee")
-                            {
-                                // Check NOMINEE_TEMP table for APRV
-                                string aprvQuery = "SELECT APRV FROM NOMINEE_TEMP WHERE APRV_NOM_ID = @GivenID";
-
-                                using (SqlCommand aprvCommand = new SqlCommand(aprvQuery, connection))
-                                {
-                                    aprvCommand.Parameters.AddWithValue("@GivenID", givenID);
-
-                                    object aprvResult = aprvCommand.ExecuteScalar();
-                                    if (aprvResult != null || aprvResult != DBNull.Value)
-                                    {
-                                        // If APRV is NULL, fetch reasons from REJECTIONS table
-                                        string reasonQuery = "SELECT REASONS FROM REJECTIONS WHERE UID = @GivenID";
-                                        using (SqlCommand reasonCommand = new SqlCommand(reasonQuery, connection))
-                                        {
-                                            reasonCommand.Parameters.AddWithValue("@GivenID", givenID);
-                                            object reasonResult = reasonCommand.ExecuteScalar();
-                                            if (reasonResult != null)
-                                            {
-                                                string reasons = reasonResult.ToString();
-                                                MessageBox.Show($"Your account has been banded!!\nReasons: {reasons}\nPlease contact supports.", "Rejected", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                                return false; // Don't let the user login
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
                             return true;
                         }
                         else

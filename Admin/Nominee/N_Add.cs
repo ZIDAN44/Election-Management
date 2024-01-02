@@ -69,7 +69,7 @@ namespace ElectionApp.Admin.Nominee
                 {
                     connection.Open();
 
-                    string query = "INSERT INTO NOMINEE_TEMP (N_NAME, N_EMAIL, LOGO) " +
+                    string query = "INSERT INTO NOMINEE (N_NAME, N_EMAIL, LOGO) " +
                                    "VALUES (@NomineeName, @Email, @Logo)";
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@NomineeName", nomineeName);
@@ -87,13 +87,13 @@ namespace ElectionApp.Admin.Nominee
                     }
                 }
 
-                // After uploading data to NOMINEE_TEMP table, retrieve N_IDENTIFIER
+                // After uploading data to NOMINEE table, retrieve N_IDENTIFIER
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     connection.Open();
 
                     // Get the last inserted N_IDENTIFIER
-                    string getIdQuery = "SELECT TOP 1 N_IDENTIFIER FROM NOMINEE_TEMP ORDER BY TEMP_NOM_ID DESC";
+                    string getIdQuery = "SELECT TOP 1 N_IDENTIFIER FROM NOMINEE ORDER BY NOM_ID DESC";
                     SqlCommand getIdCommand = new SqlCommand(getIdQuery, connection);
                     string nomineeId = getIdCommand.ExecuteScalar()?.ToString();
 

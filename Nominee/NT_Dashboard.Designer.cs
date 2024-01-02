@@ -38,10 +38,11 @@
             guna2GradientPanel1 = new Guna.UI2.WinForms.Guna2GradientPanel();
             pictureBox2 = new PictureBox();
             panel1 = new Panel();
+            pictureBox4 = new PictureBox();
             pictureBox3 = new PictureBox();
             label4 = new Label();
             panelNominee = new Panel();
-            labelApprovalStatus = new Label();
+            label3 = new Label();
             label7 = new Label();
             label2 = new Label();
             label1 = new Label();
@@ -49,6 +50,7 @@
             guna2GradientPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             panelNominee.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -157,6 +159,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(pictureBox4);
             panel1.Controls.Add(pictureBox3);
             panel1.Controls.Add(label4);
             panel1.Controls.Add(pictureBox2);
@@ -166,10 +169,22 @@
             panel1.Size = new Size(1088, 57);
             panel1.TabIndex = 25;
             // 
+            // pictureBox4
+            // 
+            pictureBox4.Image = Properties.Resources.notification;
+            pictureBox4.Location = new Point(990, 10);
+            pictureBox4.Margin = new Padding(0);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(35, 35);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 28;
+            pictureBox4.TabStop = false;
+            pictureBox4.Click += pictureBox4_Click;
+            // 
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.profile_settings;
-            pictureBox3.Location = new Point(983, 10);
+            pictureBox3.Location = new Point(937, 10);
             pictureBox3.Margin = new Padding(0);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(35, 35);
@@ -182,7 +197,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Times New Roman", 16.2F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.Location = new Point(715, 12);
+            label4.Location = new Point(644, 12);
             label4.Name = "label4";
             label4.Size = new Size(224, 33);
             label4.TabIndex = 21;
@@ -190,7 +205,7 @@
             // 
             // panelNominee
             // 
-            panelNominee.Controls.Add(labelApprovalStatus);
+            panelNominee.Controls.Add(label3);
             panelNominee.Controls.Add(label7);
             panelNominee.Controls.Add(label2);
             panelNominee.Controls.Add(label1);
@@ -201,15 +216,15 @@
             panelNominee.Size = new Size(1088, 732);
             panelNominee.TabIndex = 26;
             // 
-            // labelApprovalStatus
+            // label3
             // 
-            labelApprovalStatus.AutoSize = true;
-            labelApprovalStatus.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            labelApprovalStatus.Location = new Point(109, 488);
-            labelApprovalStatus.Name = "labelApprovalStatus";
-            labelApprovalStatus.Size = new Size(166, 25);
-            labelApprovalStatus.TabIndex = 29;
-            labelApprovalStatus.Text = "Approval Status";
+            label3.AutoSize = true;
+            label3.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            label3.Location = new Point(109, 501);
+            label3.Name = "label3";
+            label3.Size = new Size(407, 25);
+            label3.TabIndex = 29;
+            label3.Text = "Kindly check notification for any updates!";
             // 
             // label7
             // 
@@ -237,9 +252,9 @@
             label1.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
             label1.Location = new Point(109, 325);
             label1.Name = "label1";
-            label1.Size = new Size(98, 25);
+            label1.Size = new Size(88, 25);
             label1.TabIndex = 26;
-            label1.Text = "Temp ID: ";
+            label1.Text = "User ID: ";
             // 
             // pictureBox1
             // 
@@ -266,6 +281,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             panelNominee.ResumeLayout(false);
             panelNominee.PerformLayout();
@@ -281,12 +297,13 @@
         private PictureBox pictureBox2;
         private Panel panel1;
         private Panel panelNominee;
-        private Label labelApprovalStatus;
         private Label label7;
         private Label label2;
         private Label label1;
         private PictureBox pictureBox1;
         private PictureBox pictureBox3;
         private Label label4;
+        private PictureBox pictureBox4;
+        private Label label3;
     }
 }

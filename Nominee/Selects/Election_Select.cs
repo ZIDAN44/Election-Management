@@ -115,14 +115,14 @@ namespace ElectionApp.Nominee
                                             N_Dashboard dashboard = this.ParentForm as N_Dashboard;
                                             if (dashboard != null)
                                             {
-                                                dashboard.UpdateElectionStatusLabel("Selection is pending approval!");
+                                                dashboard.UpdateElectionStatusLabel("Election Status: Approval pending");
                                             }
 
-                                            MessageBox.Show("Document uploaded and election joined successfully!");
+                                            MessageBox.Show("Document uploaded & joined joined successfully");
                                         }
                                         else
                                         {
-                                            MessageBox.Show("Document upload canceled. Please upload the document to confirm selection.");
+                                            MessageBox.Show("Document upload canceled! Kindly upload document to confirm selection.");
                                         }
                                     }
                                 }

@@ -76,24 +76,8 @@ namespace ElectionApp.Common.DataBase
                         N_EMAIL VARCHAR(100),
                         LOGO VARBINARY(MAX),
                         VCOUNT INT,
+                        IS_APROV BIT DEFAULT 0
                         CONSTRAINT [UQ_PRODUCT_N_IDENTIFIER] UNIQUE ([N_IDENTIFIER])
-                    );
-                END
-
-                -- Create NOMINEE_TEMP table
-                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'NOMINEE_TEMP')
-                BEGIN
-                    CREATE TABLE NOMINEE_TEMP (
-                        TEMP_NOM_ID INT IDENTITY(1,1) PRIMARY KEY,
-                        N_IDENTIFIER AS 'TNT-' + RIGHT('00' + CAST(TEMP_NOM_ID AS VARCHAR(10)), 2) PERSISTED NOT NULL,
-                        N_NAME VARCHAR(100),
-                        P_NAME VARCHAR(100),
-                        N_EMAIL VARCHAR(100),
-                        LOGO VARBINARY(MAX),
-                        VCOUNT INT,
-                        APRV BIT DEFAULT 0,
-                        APRV_NOM_ID VARCHAR(MAX),
-                        CONSTRAINT [UQ_PRODUCT_NT_IDENTIFIER] UNIQUE ([N_IDENTIFIER])
                     );
                 END
 
