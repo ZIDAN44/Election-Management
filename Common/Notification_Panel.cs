@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
 namespace ElectionApp.Common
 {
@@ -9,6 +7,7 @@ namespace ElectionApp.Common
         private string givenID;
         private string role;
         private string connectionString;
+        private bool IS_APROV = false;
 
         public Notification_Panel(string givenID, string connectionString, string role)
         {
@@ -21,6 +20,10 @@ namespace ElectionApp.Common
             if (role == "voter")
             {
                 ShowVoterNotifications();
+            }
+            else if (role == "nominee")
+            {
+                ShowNomineeNotifications();
             }
         }
 
@@ -53,12 +56,14 @@ namespace ElectionApp.Common
                 voterNotifications.Add(approvalMessage);
             }
 
-            string votingStatusMessage = GetVotingStatusMessage();
-            if (!string.IsNullOrEmpty(votingStatusMessage))
+            if (IS_APROV)
             {
-                voterNotifications.Add(votingStatusMessage);
+                string votingStatusMessage = GetVotingStatusMessage();
+                if (!string.IsNullOrEmpty(votingStatusMessage))
+                {
+                    voterNotifications.Add(votingStatusMessage);
+                }
             }
-
             AddNotificationsToFlowLayout(voterNotifications);
         }
 
@@ -70,14 +75,28 @@ namespace ElectionApp.Common
                 {
                     connection.Open();
 
-                    string query = "SELECT IS_APROV FROM VOTER WHERE V_IDENTIFIER = @GivenID AND IS_APROV = 1";
+                    string query = "SELECT IS_APROV FROM VOTER WHERE V_IDENTIFIER = @GivenID";
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@GivenID", givenID);
-                    SqlDataReader reader = command.ExecuteReader();
+                    object isApproved = command.ExecuteScalar();
 
-                    if (reader.Read())
+                    if (isApproved != null && isApproved != DBNull.Value)
                     {
-                        return "Your registration was approved";
+                        bool approvalStatus = Convert.ToBoolean(isApproved);
+
+                        if (!approvalStatus)
+                        {
+                            return "Your registration is pending approval";
+                        }
+                        else
+                        {
+                            IS_APROV = true;
+                            return "Your registration was approved";
+                        }
+                    }
+                    else
+                    {
+                        return "Your registration was rejected";
                     }
                 }
                 catch (Exception ex)
@@ -135,6 +154,163 @@ namespace ElectionApp.Common
         }
         #endregion
 
+        #region NomineeNotification
+        private void ShowNomineeNotifications()
+        {
+            List<string> nomineeNotifications = new List<string>();
+
+            string approvalMessage = GetNomineeApprovalStatusMessage();
+            if (!string.IsNullOrEmpty(approvalMessage))
+            {
+                nomineeNotifications.Add(approvalMessage);
+            }
+
+            if (IS_APROV)
+            {
+                string partyStatusMessage = GetPartyStatusMessage();
+                if (!string.IsNullOrEmpty(partyStatusMessage))
+                {
+                    nomineeNotifications.Add(partyStatusMessage);
+                }
+
+                string electionStatusMessage = GetElectionStatusMessage();
+                if (!string.IsNullOrEmpty(electionStatusMessage))
+                {
+                    nomineeNotifications.Add(electionStatusMessage);
+                }
+            }
+            AddNotificationsToFlowLayout(nomineeNotifications);
+        }
+
+        private string GetNomineeApprovalStatusMessage()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    string query = "SELECT IS_APROV FROM NOMINEE WHERE N_IDENTIFIER = @GivenID";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    object isApproved = command.ExecuteScalar();
+
+                    if (isApproved != null && isApproved != DBNull.Value)
+                    {
+                        bool approvalStatus = Convert.ToBoolean(isApproved);
+
+                        if (!approvalStatus)
+                        {
+                            return "Your registration is pending approval";
+                        }
+                        else
+                        {
+                            IS_APROV = true;
+                            return "Your registration was approved";
+                        }
+                    }
+                    else
+                    {
+                        return "Your registration was rejected";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private string GetPartyStatusMessage()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    string query = "SELECT P_NAME FROM NOMINEE WHERE N_IDENTIFIER = @GivenID";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    object partyName = command.ExecuteScalar();
+
+                    if (partyName != null && partyName != DBNull.Value)
+                    {
+
+                        IS_APROV = true;
+                        return "You have joined a party";
+
+                    }
+                    else
+                    {
+                        return "You have not joined any party";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private string GetElectionStatusMessage()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    string query = "SELECT APRV FROM PARTICIPATES WHERE NOMINEE_ID = @GivenID";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@GivenID", givenID);
+                    object isApproved = command.ExecuteScalar();
+
+                    if (isApproved != null && isApproved != DBNull.Value)
+                    {
+                        bool approvalStatus = Convert.ToBoolean(isApproved);
+
+                        if (!approvalStatus)
+                        {
+                            return "Your participation in election pending approval";
+                        }
+                        else
+                        {
+                            IS_APROV = true;
+                            return "Your participation in election was approved";
+                        }
+                    }
+                    else
+                    {
+                        return "You haven't participated in election";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return string.Empty;
+        }
+        #endregion
+
         private void AddNotificationsToFlowLayout(List<string> messages)
         {
             if (flowLayoutPanel1.Controls.Count > 0)
@@ -146,15 +322,21 @@ namespace ElectionApp.Common
             {
                 User_Notification notificationItem = new User_Notification();
 
-                if (message.Contains("approved") || message.Contains("voted successfully"))
+                if (message.Contains("approved") || message.Contains("voted successfully")
+                    || message.Contains("a party"))
                 {
                     notificationItem.Message1 = message;
                     notificationItem.Image1 = Properties.Resources.GreenTick;
                 }
+                else if (message.Contains("pending approval"))
+                {
+                    notificationItem.Message1 = message;
+                    notificationItem.Image1 = Properties.Resources.Exclamation_y;
+                }
                 else
                 {
                     notificationItem.Message1 = message;
-                    notificationItem.Image1 = Properties.Resources.Exclamatory;
+                    notificationItem.Image1 = Properties.Resources.Exclamatory_r;
                 }
 
                 flowLayoutPanel1.Controls.Add(notificationItem);

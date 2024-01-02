@@ -166,10 +166,13 @@
   <data name="notification" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\notification.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Exclamatory" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Exclamatory.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Exclamatory_r" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Exclamatory_r.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GreenTick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GreenTick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Exclamation_y" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Exclamation_y.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
