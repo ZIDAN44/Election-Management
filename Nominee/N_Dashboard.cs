@@ -8,9 +8,9 @@ namespace ElectionApp.Nominee
     public partial class N_Dashboard : Form
     {
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         ElectionApp.Entity.Nominee nominee = new ElectionApp.Entity.Nominee();
         private Election_Select electionSelect;

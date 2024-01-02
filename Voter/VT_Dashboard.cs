@@ -8,9 +8,9 @@ namespace ElectionApp.Voter
     public partial class VT_Dashboard : Form
     {
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
+        private static extern void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private UserControl currentVoterControl;
         private User_Settings n_SettingsControl;
