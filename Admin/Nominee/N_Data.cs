@@ -167,18 +167,35 @@ namespace ElectionApp.Admin.Nominee
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
+                SqlTransaction transaction = null;
                 try
                 {
                     connection.Open();
 
-                    string updateQuery = "UPDATE NOMINEE SET IS_APROV = NULL WHERE N_IDENTIFIER = @nIdentifier";
-                    SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
-                    updateCommand.Parameters.AddWithValue("@nIdentifier", nIdentifier);
-                    updateCommand.ExecuteNonQuery();
+                    // Begin a SQL transaction
+                    transaction = connection.BeginTransaction();
+
+                    // Update NOMINEE table
+                    string updateNomineeQuery = "UPDATE NOMINEE SET IS_APROV = NULL WHERE N_IDENTIFIER = @nIdentifier";
+                    SqlCommand updateNomineeCommand = new SqlCommand(updateNomineeQuery, connection, transaction);
+                    updateNomineeCommand.Parameters.AddWithValue("@nIdentifier", nIdentifier);
+                    updateNomineeCommand.ExecuteNonQuery();
+
+                    // Update ROLE in LOGIN table
+                    string updateLoginQuery = "UPDATE LOGIN SET ROLE = 'nominee_temp' WHERE UID = @nIdentifier";
+                    SqlCommand updateLoginCommand = new SqlCommand(updateLoginQuery, connection, transaction);
+                    updateLoginCommand.Parameters.AddWithValue("@nIdentifier", nIdentifier);
+                    updateLoginCommand.ExecuteNonQuery();
+
+                    // Commit the transaction
+                    transaction.Commit();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error updating NOMINEE: " + ex.Message);
+                    MessageBox.Show("Error updating NOMINEE and LOGIN: " + ex.Message);
+
+                    // Roll back the transaction if an error occurs
+                    transaction?.Rollback();
                 }
                 finally
                 {

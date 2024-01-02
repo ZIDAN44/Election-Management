@@ -165,18 +165,35 @@ namespace ElectionApp.Admin.Voter
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
+                SqlTransaction transaction = null;
                 try
                 {
                     connection.Open();
 
-                    string updateQuery = "UPDATE VOTER SET IS_APROV = NULL WHERE V_IDENTIFIER = @vIdentifier";
-                    SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
-                    updateCommand.Parameters.AddWithValue("@vIdentifier", vIdentifier);
-                    updateCommand.ExecuteNonQuery();
+                    // Begin a SQL transaction
+                    transaction = connection.BeginTransaction();
+
+                    // Update VOTER table
+                    string updateVoterQuery = "UPDATE VOTER SET IS_APROV = NULL WHERE V_IDENTIFIER = @vIdentifier";
+                    SqlCommand updateVoterCommand = new SqlCommand(updateVoterQuery, connection, transaction);
+                    updateVoterCommand.Parameters.AddWithValue("@vIdentifier", vIdentifier);
+                    updateVoterCommand.ExecuteNonQuery();
+
+                    // Update ROLE in LOGIN table
+                    string updateLoginQuery = "UPDATE LOGIN SET ROLE = 'voter_temp' WHERE UID = @vIdentifier";
+                    SqlCommand updateLoginCommand = new SqlCommand(updateLoginQuery, connection, transaction);
+                    updateLoginCommand.Parameters.AddWithValue("@vIdentifier", vIdentifier);
+                    updateLoginCommand.ExecuteNonQuery();
+
+                    // Commit the transaction
+                    transaction.Commit();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error updating VOTER: " + ex.Message);
+                    MessageBox.Show("Error updating VOTER and LOGIN: " + ex.Message);
+
+                    // Roll back the transaction if an error occurs
+                    transaction?.Rollback();
                 }
                 finally
                 {
