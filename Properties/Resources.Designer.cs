@@ -83,6 +83,16 @@ namespace ElectionApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Exclamatory {
+            get {
+                object obj = ResourceManager.GetObject("Exclamatory", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap eye_blue {
             get {
                 object obj = ResourceManager.GetObject("eye_blue", resourceCulture);
@@ -96,6 +106,16 @@ namespace ElectionApp.Properties {
         internal static System.Drawing.Bitmap eye_white {
             get {
                 object obj = ResourceManager.GetObject("eye_white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GreenTick {
+            get {
+                object obj = ResourceManager.GetObject("GreenTick", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -156,6 +176,16 @@ namespace ElectionApp.Properties {
         internal static System.Drawing.Bitmap name_tag {
             get {
                 object obj = ResourceManager.GetObject("name_tag", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap notification {
+            get {
+                object obj = ResourceManager.GetObject("notification", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
