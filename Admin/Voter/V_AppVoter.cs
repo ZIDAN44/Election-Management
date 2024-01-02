@@ -40,7 +40,7 @@ namespace ElectionApp.Admin.Voter
                 {
                     connection.Open();
 
-                    string query = "SELECT V_IDENTIFIER, V_NAME, V_EMAIL, APRV, APRV_NID FROM VOTER_TEMP";
+                    string query = "SELECT V_IDENTIFIER, V_NAME, V_EMAIL, IS_APROV FROM VOTER";
                     using (SqlDataAdapter adapter = new SqlDataAdapter(query, connection))
                     {
                         DataTable dataTable = new DataTable();
@@ -53,7 +53,7 @@ namespace ElectionApp.Admin.Voter
                         dataGridView1.DataSource = dataTable;
 
                         // Adjust column headers and other configurations as needed
-                        dataGridView1.Columns["V_IDENTIFIER"].HeaderText = "TEMP ID";
+                        dataGridView1.Columns["V_IDENTIFIER"].HeaderText = "Voter ID";
                         dataGridView1.Columns["V_NAME"].HeaderText = "Voter Name";
                         dataGridView1.Columns["V_EMAIL"].HeaderText = "Email";
 
@@ -66,11 +66,9 @@ namespace ElectionApp.Admin.Voter
                         dataGridView1.Columns.Insert(3, picColumn);
 
                         // Update the Approval Status and NID columns' display indices
-                        dataGridView1.Columns["APRV"].DisplayIndex = 4;
-                        dataGridView1.Columns["APRV_NID"].DisplayIndex = 5;
+                        dataGridView1.Columns["IS_APROV"].DisplayIndex = 4;
 
-                        dataGridView1.Columns["APRV"].HeaderText = "Approval Status";
-                        dataGridView1.Columns["APRV_NID"].HeaderText = "New ID";
+                        dataGridView1.Columns["IS_APROV"].HeaderText = "Approval Status";
 
                         // Event handler for CellClick event to handle opening documents
                         dataGridView1.CellClick += dataGridView1_CellClick;
@@ -102,7 +100,7 @@ namespace ElectionApp.Admin.Voter
                 {
                     connection.Open();
 
-                    string query = "SELECT PIC FROM VOTER_TEMP WHERE V_IDENTIFIER = @VIdentifier";
+                    string query = "SELECT PIC FROM VOTER WHERE V_IDENTIFIER = @VIdentifier";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@VIdentifier", vIdentifier);
@@ -134,6 +132,66 @@ namespace ElectionApp.Admin.Voter
             }
         }
 
+        private void UpdateVoterApprovalRoleAndInsertRegistrar()
+        {
+            // Check if there's a selected row in dataGridView1
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+                // Get the V_IDENTIFIER from the selected row in dataGridView1
+                string vIdentifier = dataGridView1.SelectedRows[0].Cells["V_IDENTIFIER"].Value.ToString();
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    try
+                    {
+                        connection.Open();
+
+                        // Update VOTER's IS_APROV to 1 for the fetched V_IDENTIFIER
+                        string updateIS_APROVQuery = "UPDATE VOTER SET IS_APROV = 1 WHERE V_IDENTIFIER = @VIdentifier";
+                        using (SqlCommand updateIS_APROVCommand = new SqlCommand(updateIS_APROVQuery, connection))
+                        {
+                            updateIS_APROVCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
+                            updateIS_APROVCommand.ExecuteNonQuery();
+                        }
+
+                        // Update ROLE to 'voter' in LOGIN table for the fetched V_IDENTIFIER
+                        string updateRoleQuery = "UPDATE LOGIN SET ROLE = 'voter' WHERE UID = @VIdentifier";
+                        using (SqlCommand updateRoleCommand = new SqlCommand(updateRoleQuery, connection))
+                        {
+                            updateRoleCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
+                            updateRoleCommand.ExecuteNonQuery();
+                        }
+
+                        // Insert into REGISTRARS table
+                        string insertRegistrarQuery = "INSERT INTO REGISTRARS (USER_ID, ADMIN_ID, ROLE) " +
+                                                      "VALUES(@VoterID, @AdminID, @Role)";
+
+                        using (SqlCommand insertRegistrarCommand = new SqlCommand(insertRegistrarQuery, connection))
+                        {
+                            insertRegistrarCommand.Parameters.AddWithValue("@VoterID", vIdentifier);
+                            insertRegistrarCommand.Parameters.AddWithValue("@AdminID", AdminID); // Assuming AdminID is defined elsewhere
+                            insertRegistrarCommand.Parameters.AddWithValue("@Role", "voter");
+                            insertRegistrarCommand.ExecuteNonQuery();
+                        }
+
+                        MessageBox.Show("Voter approval & role updated successfully!");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message);
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to update voter approval & role");
+            }
+        }
+
         private void ApproveRegistration()
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -142,7 +200,7 @@ namespace ElectionApp.Admin.Voter
 
                 int selectedRowIndex = dataGridView1.CurrentCell.RowIndex;
                 string vIdentifier = dataGridView1.Rows[selectedRowIndex].Cells["V_IDENTIFIER"].Value.ToString();
-                object cellValue = dataGridView1.Rows[selectedRowIndex].Cells["APRV"].Value;
+                object cellValue = dataGridView1.Rows[selectedRowIndex].Cells["IS_APROV"].Value;
                 bool isApproved = cellValue != DBNull.Value && Convert.ToBoolean(cellValue);
 
                 // Check if the selected entry is already approved
@@ -152,140 +210,11 @@ namespace ElectionApp.Admin.Voter
                     return;
                 }
 
-                // Check if the selected entry was banned before but is pending for approval again
-                string checkBannedQuery = "SELECT APRV_NID FROM VOTER_TEMP WHERE V_IDENTIFIER = @VIdentifier AND APRV IS NULL";
-                using (SqlCommand checkBannedCommand = new SqlCommand(checkBannedQuery, connection))
-                {
-                    checkBannedCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
-                    object bannedResult = checkBannedCommand.ExecuteScalar();
-                    string bannedVoterID = (bannedResult != null) ? bannedResult.ToString() : null;
+                // Update Voter & Login table also insert into REGISTRARS table
+                UpdateVoterApprovalRoleAndInsertRegistrar();
 
-                    if (!string.IsNullOrEmpty(bannedVoterID))
-                    {
-                        var confirmResult = MessageBox.Show("This user was banned before! Approving again will generate a new ID. Proceed?", "Confirm Reset Approval", MessageBoxButtons.YesNo);
-                        if (confirmResult == DialogResult.Yes)
-                        {
-                            // Reset the approval status by inserting into VOTER table
-                            string insertVoterQuery = "INSERT INTO VOTER (V_NAME, V_EMAIL, PIC) " +
-                                                        "OUTPUT INSERTED.V_IDENTIFIER " +
-                                                        "SELECT V_NAME, V_EMAIL, PIC FROM VOTER_TEMP WHERE V_IDENTIFIER = @VIdentifier";
-
-                            using (SqlCommand insertVoterCommand = new SqlCommand(insertVoterQuery, connection))
-                            {
-                                insertVoterCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
-                                var result = insertVoterCommand.ExecuteScalar();
-                                string newVoterID = (result != null) ? result.ToString() : null;
-
-                                if (!string.IsNullOrEmpty(newVoterID))
-                                {
-                                    // Update VOTER_TEMP's APRV_NID with the newly created V_IDENTIFIER (VT-*)
-                                    string updateAPRVNIDQuery = "UPDATE VOTER_TEMP SET APRV = 1, APRV_NID = @NewVoterID WHERE V_IDENTIFIER = @VIdentifier";
-
-                                    using (SqlCommand updateAPRVNIDCommand = new SqlCommand(updateAPRVNIDQuery, connection))
-                                    {
-                                        updateAPRVNIDCommand.Parameters.AddWithValue("@NewVoterID", newVoterID);
-                                        updateAPRVNIDCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
-                                        updateAPRVNIDCommand.ExecuteNonQuery();
-                                    }
-
-                                    // Retrieve the password associated with the TVT-* ID from LOGIN table
-                                    string getPasswordQuery = "SELECT PASSWORD FROM LOGIN WHERE UID = @UID";
-                                    using (SqlCommand getPasswordCommand = new SqlCommand(getPasswordQuery, connection))
-                                    {
-                                        getPasswordCommand.Parameters.AddWithValue("@UID", vIdentifier);
-                                        object passwordResult = getPasswordCommand.ExecuteScalar();
-                                        string password = (passwordResult != null) ? passwordResult.ToString() : null;
-
-                                        // Insert into LOGIN table using newVoterID (VT-*) as UID and retrieved password
-                                        string insertLoginQuery = "INSERT INTO LOGIN (UID, PASSWORD, ROLE) " +
-                                                                  "VALUES (@UID, @Password, @Role)";
-
-                                        using (SqlCommand insertLoginCommand = new SqlCommand(insertLoginQuery, connection))
-                                        {
-                                            insertLoginCommand.Parameters.AddWithValue("@UID", newVoterID);
-                                            insertLoginCommand.Parameters.AddWithValue("@Password", password);
-                                            insertLoginCommand.Parameters.AddWithValue("@Role", "voter");
-                                            insertLoginCommand.ExecuteNonQuery();
-                                        }
-                                    }
-
-                                    // Refresh the DataGridView
-                                    LoadVoterTempData();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // If the user chooses 'No', stop the process
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        // Copy data to VOTER table and retrieve the newly inserted V_IDENTIFIER (VT-*)
-                        string insertVoterQuery = "INSERT INTO VOTER (V_NAME, V_EMAIL, PIC) " +
-                                                  "OUTPUT INSERTED.V_IDENTIFIER " +
-                                                  "SELECT V_NAME, V_EMAIL, PIC FROM VOTER_TEMP WHERE V_IDENTIFIER = @VIdentifier";
-
-                        using (SqlCommand insertVoterCommand = new SqlCommand(insertVoterQuery, connection))
-                        {
-                            insertVoterCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
-                            var result = insertVoterCommand.ExecuteScalar();
-                            string newVoterID = (result != null) ? result.ToString() : null;
-
-                            if (!string.IsNullOrEmpty(newVoterID))
-                            {
-                                // Update VOTER_TEMP's APRV_NID with the newly created V_IDENTIFIER (VT-*)
-                                string updateAPRVNIDQuery = "UPDATE VOTER_TEMP SET APRV = 1, APRV_NID = @NewVoterID WHERE V_IDENTIFIER = @VIdentifier";
-
-                                using (SqlCommand updateAPRVNIDCommand = new SqlCommand(updateAPRVNIDQuery, connection))
-                                {
-                                    updateAPRVNIDCommand.Parameters.AddWithValue("@NewVoterID", newVoterID);
-                                    updateAPRVNIDCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
-                                    updateAPRVNIDCommand.ExecuteNonQuery();
-                                }
-
-                                // Retrieve the password associated with the TVT-* ID from LOGIN table
-                                string getPasswordQuery = "SELECT PASSWORD FROM LOGIN WHERE UID = @UID";
-                                using (SqlCommand getPasswordCommand = new SqlCommand(getPasswordQuery, connection))
-                                {
-                                    getPasswordCommand.Parameters.AddWithValue("@UID", vIdentifier);
-                                    object passwordResult = getPasswordCommand.ExecuteScalar();
-                                    string password = (passwordResult != null) ? passwordResult.ToString() : null;
-
-                                    // Insert into LOGIN table using newVoterID (VT-*) as UID and retrieved password
-                                    string insertLoginQuery = "INSERT INTO LOGIN (UID, PASSWORD, ROLE) " +
-                                                              "VALUES (@UID, @Password, @Role)";
-
-                                    using (SqlCommand insertLoginCommand = new SqlCommand(insertLoginQuery, connection))
-                                    {
-                                        insertLoginCommand.Parameters.AddWithValue("@UID", newVoterID);
-                                        insertLoginCommand.Parameters.AddWithValue("@Password", password);
-                                        insertLoginCommand.Parameters.AddWithValue("@Role", "voter");
-                                        insertLoginCommand.ExecuteNonQuery();
-                                    }
-                                }
-
-                                // Insert into REGISTRARS table
-                                string insertRegistrarQuery = "INSERT INTO REGISTRARS (USER_ID, ADMIN_ID, ROLE) " +
-                                                              "SELECT @VoterID, @AdminID, @Role " +
-                                                              "FROM VOTER_TEMP WHERE V_IDENTIFIER = @VIdentifier";
-
-                                using (SqlCommand insertRegistrarCommand = new SqlCommand(insertRegistrarQuery, connection))
-                                {
-                                    insertRegistrarCommand.Parameters.AddWithValue("@VoterID", newVoterID);
-                                    insertRegistrarCommand.Parameters.AddWithValue("@AdminID", AdminID);
-                                    insertRegistrarCommand.Parameters.AddWithValue("@Role", "voter");
-                                    insertRegistrarCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
-                                    insertRegistrarCommand.ExecuteNonQuery();
-                                }
-                            }
-                        }
-
-                        // Refresh the DataGridView
-                        LoadVoterTempData();
-                    }
-                }
+                // Refresh the DataGridView
+                LoadVoterTempData();
             }
         }
 
@@ -296,7 +225,7 @@ namespace ElectionApp.Admin.Voter
                 int selectedRowIndex = dataGridView1.CurrentCell.RowIndex;
                 string vIdentifier = dataGridView1.Rows[selectedRowIndex].Cells["V_IDENTIFIER"].Value.ToString();
 
-                object cellValue = dataGridView1.Rows[selectedRowIndex].Cells["APRV"].Value;
+                object cellValue = dataGridView1.Rows[selectedRowIndex].Cells["IS_APROV"].Value;
                 bool isRejected = (cellValue == DBNull.Value);
 
                 if (isRejected)
@@ -320,7 +249,7 @@ namespace ElectionApp.Admin.Voter
                             using (SqlConnection connection = new SqlConnection(ConnectionString))
                             {
                                 connection.Open();
-                                string updateAPRVQuery = "UPDATE VOTER_TEMP SET APRV = NULL WHERE V_IDENTIFIER = @VIdentifier";
+                                string updateAPRVQuery = "UPDATE VOTER SET IS_APROV = NULL WHERE V_IDENTIFIER = @VIdentifier";
                                 using (SqlCommand updateAPRVCommand = new SqlCommand(updateAPRVQuery, connection))
                                 {
                                     updateAPRVCommand.Parameters.AddWithValue("@VIdentifier", vIdentifier);
@@ -355,11 +284,10 @@ namespace ElectionApp.Admin.Voter
                 try
                 {
                     connection.Open();
-                    string query = "SELECT V_IDENTIFIER, V_NAME, V_EMAIL, APRV, APRV_NID " +
-                                   "FROM VOTER_TEMP " +
+                    string query = "SELECT V_IDENTIFIER, V_NAME, V_EMAIL, IS_APROV " +
+                                   "FROM VOTER " +
                                    "WHERE V_NAME LIKE @searchTerm OR " +
                                    "V_EMAIL LIKE @searchTerm OR " +
-                                   "APRV_NID LIKE @searchTerm OR " +
                                    "V_IDENTIFIER LIKE @searchTerm";
 
                     dataAdapter = new SqlDataAdapter(query, connection);

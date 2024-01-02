@@ -60,23 +60,8 @@ namespace ElectionApp.Common.DataBase
                         V_EMAIL VARCHAR(100),
                         PIC VARBINARY(MAX),
                         HAS_VOTE BIT DEFAULT 0,
+                        IS_APROV BIT DEFAULT 0
                         CONSTRAINT [UQ_PRODUCT_V_IDENTIFIER] UNIQUE ([V_IDENTIFIER])
-                    );
-                END
-
-                -- Create VOTER_TEMP table
-                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'VOTER_TEMP')
-                BEGIN
-                    CREATE TABLE VOTER_TEMP (
-                        TEMP_NID INT IDENTITY(1,1) PRIMARY KEY,
-                        V_IDENTIFIER AS 'TVT-' + RIGHT('00' + CAST(TEMP_NID AS VARCHAR(10)), 2) PERSISTED NOT NULL,
-                        V_NAME VARCHAR(100),
-                        V_EMAIL VARCHAR(100),
-                        PIC VARBINARY(MAX),
-                        HAS_VOTE BIT DEFAULT 0,
-                        APRV BIT DEFAULT 0,
-                        APRV_NID VARCHAR(MAX),
-                        CONSTRAINT [UQ_PRODUCT_VT_IDENTIFIER] UNIQUE ([V_IDENTIFIER])
                     );
                 END
 

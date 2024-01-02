@@ -34,7 +34,7 @@ namespace ElectionApp.Main
                 {
                     connection.Open();
 
-                    string query = "INSERT INTO VOTER_TEMP (V_NAME, V_EMAIL, PIC) " +
+                    string query = "INSERT INTO VOTER (V_NAME, V_EMAIL, PIC) " +
                                    "VALUES (@VName, @Email, @Pic)";
 
                     SqlCommand command = new SqlCommand(query, connection);
@@ -47,13 +47,13 @@ namespace ElectionApp.Main
                     MessageBox.Show("Data uploaded successfully.");
                 }
 
-                // After uploading data to VOTER_TEMP table, retrieve V_IDENTIFIER
+                // After uploading data to VOTER table, retrieve V_IDENTIFIER
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     connection.Open();
 
                     // Get the last inserted V_IDENTIFIER
-                    string getIdQuery = "SELECT TOP 1 V_IDENTIFIER FROM VOTER_TEMP ORDER BY TEMP_NID DESC";
+                    string getIdQuery = "SELECT TOP 1 V_IDENTIFIER FROM VOTER ORDER BY NID DESC";
                     SqlCommand getIdCommand = new SqlCommand(getIdQuery, connection);
                     string voterId = getIdCommand.ExecuteScalar()?.ToString();
 

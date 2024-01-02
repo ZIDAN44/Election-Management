@@ -40,7 +40,7 @@ namespace ElectionApp.Admin.Voter
                 {
                     connection.Open();
 
-                    string query = "SELECT V_IDENTIFIER, V_NAME, V_EMAIL, HAS_VOTE FROM VOTER";
+                    string query = "SELECT V_IDENTIFIER, V_NAME, V_EMAIL, HAS_VOTE FROM VOTER WHERE IS_APROV = 1";
                     using (SqlDataAdapter adapter = new SqlDataAdapter(query, connection))
                     {
                         DataTable dataTable = new DataTable();
@@ -161,7 +161,7 @@ namespace ElectionApp.Admin.Voter
             }
         }
 
-        private void UpdateVoterTemp(string vIdentifier)
+        private void UpdateVoter_APROV(string vIdentifier)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -169,79 +169,20 @@ namespace ElectionApp.Admin.Voter
                 {
                     connection.Open();
 
-                    string updateQuery = "UPDATE VOTER_TEMP SET APRV = NULL WHERE APRV_NID = @vIdentifier";
+                    string updateQuery = "UPDATE VOTER SET IS_APROV = NULL WHERE V_IDENTIFIER = @vIdentifier";
                     SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
                     updateCommand.Parameters.AddWithValue("@vIdentifier", vIdentifier);
                     updateCommand.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error updating VOTER_TEMP: " + ex.Message);
+                    MessageBox.Show("Error updating VOTER: " + ex.Message);
                 }
                 finally
                 {
                     connection.Close();
                 }
             }
-        }
-
-        private void RemoveVoter(string vID)
-        {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                try
-                {
-                    connection.Open();
-
-                    string removeRegulatesQuery = "DELETE FROM VOTER WHERE V_IDENTIFIER = @vID";
-                    SqlCommand removeRegulatesCommand = new SqlCommand(removeRegulatesQuery, connection);
-                    removeRegulatesCommand.Parameters.AddWithValue("@vID", vID);
-                    removeRegulatesCommand.ExecuteNonQuery();
-
-                    LoadVoterData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-        }
-
-        private bool CheckUserExistsInVoterTemp(string vIdentifier)
-        {
-            bool userExists = false;
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                try
-                {
-                    connection.Open();
-
-                    string query = "SELECT TOP 1 1 FROM VOTER_TEMP WHERE APRV_NID = @vIdentifier";
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@vIdentifier", vIdentifier);
-
-                        object result = command.ExecuteScalar();
-                        if (result != null && result != DBNull.Value)
-                        {
-                            userExists = true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error checking VOTER_TEMP: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return userExists;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -279,17 +220,11 @@ namespace ElectionApp.Admin.Voter
                             // Insert data into REJECTIONS table
                             Reject.InsertIntoRejections(vIdentifier, reason, adminID, ConnectionString);
 
-                            // Check if the user exists in VOTER_TEMP table
-                            bool userExistsInVoterTemp = CheckUserExistsInVoterTemp(vIdentifier);
+                            // Update VOTER table
+                            UpdateVoter_APROV(vIdentifier);
 
-                            if (userExistsInVoterTemp)
-                            {
-                                // Update VOTER_TEMP table
-                                UpdateVoterTemp(vIdentifier);
-                            }
-
-                            // Remove user from VOTER table
-                            RemoveVoter(vIdentifier);
+                            // Re-load the Voter Data
+                            LoadVoterData();
                         }
                         catch (Exception ex)
                         {

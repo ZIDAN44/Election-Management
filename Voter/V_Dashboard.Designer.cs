@@ -28,16 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(V_Dashboard));
             guna2CircleButton2 = new Guna.UI2.WinForms.Guna2CircleButton();
             guna2CircleButton1 = new Guna.UI2.WinForms.Guna2CircleButton();
             guna2GradientPanel1 = new Guna.UI2.WinForms.Guna2GradientPanel();
             pictureBox2 = new PictureBox();
             panel1 = new Panel();
+            pictureBox4 = new PictureBox();
             pictureBox3 = new PictureBox();
             label4 = new Label();
             panelVoter = new Panel();
@@ -47,12 +48,13 @@
             panel2 = new Panel();
             pictureBox1 = new PictureBox();
             label1 = new Label();
-            labelApprovalStatus = new Label();
+            labelVoteStatus = new Label();
             label2 = new Label();
             label7 = new Label();
             guna2GradientPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             panelVoter.SuspendLayout();
             guna2ShadowPanel1.SuspendLayout();
@@ -90,7 +92,7 @@
             guna2CircleButton2.PressedDepth = 5;
             guna2CircleButton2.ShadowDecoration.BorderRadius = 0;
             guna2CircleButton2.ShadowDecoration.Color = Color.Transparent;
-            guna2CircleButton2.ShadowDecoration.CustomizableEdges = customizableEdges1;
+            guna2CircleButton2.ShadowDecoration.CustomizableEdges = customizableEdges5;
             guna2CircleButton2.ShadowDecoration.Depth = 0;
             guna2CircleButton2.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             guna2CircleButton2.Size = new Size(50, 50);
@@ -127,7 +129,7 @@
             guna2CircleButton1.PressedDepth = 5;
             guna2CircleButton1.ShadowDecoration.BorderRadius = 0;
             guna2CircleButton1.ShadowDecoration.Color = Color.Transparent;
-            guna2CircleButton1.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            guna2CircleButton1.ShadowDecoration.CustomizableEdges = customizableEdges6;
             guna2CircleButton1.ShadowDecoration.Depth = 0;
             guna2CircleButton1.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             guna2CircleButton1.Size = new Size(50, 50);
@@ -138,13 +140,13 @@
             // 
             guna2GradientPanel1.Controls.Add(guna2CircleButton2);
             guna2GradientPanel1.Controls.Add(guna2CircleButton1);
-            guna2GradientPanel1.CustomizableEdges = customizableEdges3;
+            guna2GradientPanel1.CustomizableEdges = customizableEdges7;
             guna2GradientPanel1.Dock = DockStyle.Top;
             guna2GradientPanel1.FillColor = Color.Silver;
             guna2GradientPanel1.FillColor2 = Color.DimGray;
             guna2GradientPanel1.Location = new Point(0, 0);
             guna2GradientPanel1.Name = "guna2GradientPanel1";
-            guna2GradientPanel1.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            guna2GradientPanel1.ShadowDecoration.CustomizableEdges = customizableEdges8;
             guna2GradientPanel1.Size = new Size(1088, 50);
             guna2GradientPanel1.TabIndex = 23;
             guna2GradientPanel1.MouseDown += guna2GradientPanel1_MouseDown;
@@ -163,6 +165,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(pictureBox4);
             panel1.Controls.Add(pictureBox3);
             panel1.Controls.Add(label4);
             panel1.Controls.Add(pictureBox2);
@@ -172,10 +175,22 @@
             panel1.Size = new Size(1088, 57);
             panel1.TabIndex = 24;
             // 
+            // pictureBox4
+            // 
+            pictureBox4.Image = Properties.Resources.notification;
+            pictureBox4.Location = new Point(990, 10);
+            pictureBox4.Margin = new Padding(0);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(35, 35);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 26;
+            pictureBox4.TabStop = false;
+            pictureBox4.Click += pictureBox4_Click;
+            // 
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.profile_settings;
-            pictureBox3.Location = new Point(980, 11);
+            pictureBox3.Location = new Point(937, 10);
             pictureBox3.Margin = new Padding(0);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(35, 35);
@@ -238,7 +253,7 @@
             // 
             panel2.Controls.Add(pictureBox1);
             panel2.Controls.Add(label1);
-            panel2.Controls.Add(labelApprovalStatus);
+            panel2.Controls.Add(labelVoteStatus);
             panel2.Controls.Add(label2);
             panel2.Controls.Add(label7);
             panel2.Location = new Point(56, 44);
@@ -265,15 +280,15 @@
             label1.TabIndex = 19;
             label1.Text = "User ID: ";
             // 
-            // labelApprovalStatus
+            // labelVoteStatus
             // 
-            labelApprovalStatus.AutoSize = true;
-            labelApprovalStatus.Font = new Font("Microsoft PhagsPa", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            labelApprovalStatus.Location = new Point(3, 402);
-            labelApprovalStatus.Name = "labelApprovalStatus";
-            labelApprovalStatus.Size = new Size(121, 26);
-            labelApprovalStatus.TabIndex = 22;
-            labelApprovalStatus.Text = "Vote Status";
+            labelVoteStatus.AutoSize = true;
+            labelVoteStatus.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            labelVoteStatus.Location = new Point(3, 402);
+            labelVoteStatus.Name = "labelVoteStatus";
+            labelVoteStatus.Size = new Size(120, 25);
+            labelVoteStatus.TabIndex = 22;
+            labelVoteStatus.Text = "Vote Status:";
             // 
             // label2
             // 
@@ -312,6 +327,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             panelVoter.ResumeLayout(false);
             guna2ShadowPanel1.ResumeLayout(false);
@@ -331,7 +347,7 @@
         private Panel panel2;
         private PictureBox pictureBox1;
         private Label label1;
-        private Label labelApprovalStatus;
+        private Label labelVoteStatus;
         private Label label2;
         private Label label7;
         private PictureBox pictureBox3;
@@ -339,5 +355,6 @@
         private Panel panelSelecter;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel1;
         private Button button1;
+        private PictureBox pictureBox4;
     }
 }

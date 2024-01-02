@@ -18,6 +18,7 @@ namespace ElectionApp.Voter
         ElectionApp.Entity.Voter voter = new ElectionApp.Entity.Voter();
         private UserControl currentVoterControl;
         private User_Settings n_SettingsControl;
+        private Notification_Panel n_Notification;
 
         public V_Dashboard(string givenID, string connectionString)
         {
@@ -25,7 +26,6 @@ namespace ElectionApp.Voter
             ConnectionString = connectionString;
             InitializeComponent();
             FetchVoterDetails();
-            CheckForVotingStatus();
         }
 
         private string GivenID
@@ -108,6 +108,11 @@ namespace ElectionApp.Voter
                         label7.Text = "Email: " + voter.V_EMAIL;
                         label4.Text = "Welcome, " + voter.V_NAME;
 
+                        if (!voter.HAS_VOTE)
+                        {
+                            labelVoteStatus.Text = "Vote Status: N/A";
+                        }
+
                         if (voter.PIC != null)
                         {
                             using (MemoryStream ms = new MemoryStream(voter.PIC))
@@ -138,64 +143,12 @@ namespace ElectionApp.Voter
             }
         }
 
-        private void CheckForVotingStatus()
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    connection.Open();
-
-                    string query = "SELECT HAS_VOTE FROM VOTER WHERE V_IDENTIFIER = @GivenID";
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@GivenID", givenID);
-
-                        object hasVoted = command.ExecuteScalar();
-                        if (hasVoted != null && hasVoted != DBNull.Value)
-                        {
-                            bool hasVotedStatus = Convert.ToBoolean(hasVoted);
-
-                            if (hasVotedStatus)
-                            {
-                                labelApprovalStatus.Text = "Status: Voted";
-                                labelApprovalStatus.BackColor = System.Drawing.Color.LightGreen;
-                            }
-                            else
-                            {
-                                labelApprovalStatus.Text = "Status: Not Voted";
-                                labelApprovalStatus.BackColor = System.Drawing.Color.Red;
-                            }
-                        }
-                        else
-                        {
-                            labelApprovalStatus.Text = "Error: Invalid Voter Identifier or Voter Not Found.";
-                            labelApprovalStatus.BackColor = System.Drawing.Color.Red;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-        }
-
         public void UpdateApprovalStatus(bool hasVoted)
         {
             if (hasVoted)
             {
-                labelApprovalStatus.Text = "Status: Voted";
-                labelApprovalStatus.BackColor = System.Drawing.Color.LightGreen;
-            }
-            else
-            {
-                labelApprovalStatus.Text = "Status: Not Voted";
-                labelApprovalStatus.BackColor = System.Drawing.Color.Red;
+                labelVoteStatus.Text = "Vote Status: Voted";
+                labelVoteStatus.BackColor = System.Drawing.Color.LightGreen;
             }
         }
 
@@ -267,6 +220,27 @@ namespace ElectionApp.Voter
                 // If no Vote_Select control is found, create and show it
                 Vote_Select vote_Select = new Vote_Select(GivenID, connectionString);
                 adduserControl1(vote_Select);
+            }
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            if (n_Notification == null || n_Notification.IsDisposed)
+            {
+                n_Notification = new Notification_Panel(givenID, connectionString, "voter");
+                adduserControl2(n_Notification);
+            }
+            else
+            {
+                if (n_Notification.Visible)
+                {
+                    n_Notification.Hide();
+                }
+                else
+                {
+                    n_Notification.Show();
+                    n_Notification.BringToFront();
+                }
             }
         }
     }
