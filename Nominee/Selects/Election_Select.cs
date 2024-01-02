@@ -143,12 +143,8 @@ namespace ElectionApp.Nominee
         private bool IsPdfFile(byte[] data)
         {
             // Check for the PDF signature in the first few bytes
-            if (data.Length > 4 &&
-                data[0] == 0x25 && data[1] == 0x50 && data[2] == 0x44 && data[3] == 0x46) // '%PDF'
-            {
-                return true;
-            }
-            return false;
+            return data.Length > 4 &&
+                data[0] == 0x25 && data[1] == 0x50 && data[2] == 0x44 && data[3] == 0x46;
         }
 
         private void DisplayPdf(byte[] fileData)

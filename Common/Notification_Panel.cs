@@ -115,14 +115,7 @@ namespace ElectionApp.Common
                     {
                         bool hasVotedStatus = Convert.ToBoolean(hasVoted);
 
-                        if (hasVotedStatus)
-                        {
-                            return "You have voted successfully";
-                        }
-                        else
-                        {
-                            return "You still haven't voted";
-                        }
+                        return hasVotedStatus ? "You have voted successfully" : "You still haven't voted";
                     }
                 }
                 catch (Exception ex)

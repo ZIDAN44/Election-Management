@@ -105,14 +105,7 @@ namespace ElectionApp.Nominee
                         label5.Text = (nominee.VCOUNT != 0) ? "Vote Count: " + nominee.VCOUNT : "Vote Count: N/A";
                         label4.Text = "Welcome, " + nominee.N_NAME;
 
-                        if (nominee.P_NAME == null)
-                        {
-                            label3.Text = "Party: N/A";
-                        }
-                        else
-                        {
-                            label3.Text = "Party: " + nominee.P_NAME;
-                        }
+                        label3.Text = string.IsNullOrEmpty(nominee.P_NAME) ? "Party: N/A" : "Party: " + nominee.P_NAME;
 
                         if (nominee.LOGO != null)
                         {
