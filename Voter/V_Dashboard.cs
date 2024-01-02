@@ -112,6 +112,11 @@ namespace ElectionApp.Voter
                         {
                             labelVoteStatus.Text = "Vote Status: N/A";
                         }
+                        else
+                        {
+                            labelVoteStatus.Text = "Vote Status: Voted";
+                            labelVoteStatus.BackColor = System.Drawing.Color.LightGreen;
+                        }
 
                         if (voter.PIC != null)
                         {
